@@ -9,3 +9,4 @@ target
 # PicEvolve
 .library.txt
 images
+*.png
