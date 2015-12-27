@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -66,7 +67,13 @@ public class CommandRunner {
             final List<Object> params = new ArrayList<>();
             for (int i = 0; i < this.parameters.size(); i++) {
                 writer.print(this.command.prompts()[i]);
-                params.add(this.parameters.get(i).getValue(scanner));
+                try {
+                    params.add(this.parameters.get(i).getValue(scanner));
+                } catch (final InputMismatchException e) {
+                    writer.println("Invalid input");
+                    scanner.next();
+                    return;
+                }
             }
             try {
                 this.method.invoke(handler,
@@ -132,13 +139,15 @@ public class CommandRunner {
                 }
             } while (line.isPresent());
         }
+        printStream.println();
     }
 
     private String getHelp() {
         final StringBuilder sb = new StringBuilder();
+        sb.append("\n").append("Commands:").append("\n");
         this.commandMethods.entrySet().stream()
                 .forEach(entry -> sb
-                        .append(String.format("%20s\t%s\n", entry.getKey(),
+                        .append(String.format("%10s\t%s\n", entry.getKey(),
                                 entry.getValue().getCommand().description())));
         return sb.toString();
     }
