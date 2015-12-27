@@ -1,9 +1,12 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.visitor;
 
 import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.github.adinsa.picevolve.PicEvolve;
+import com.github.adinsa.picevolve.visitor.EvaluatorVisitor;
 
 public class EvaluationVisitorTest {
 

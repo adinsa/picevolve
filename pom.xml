@@ -67,7 +67,7 @@
               <finalName>${project.artifactId}</finalName>
               <archive>
                 <manifest>
-                  <mainClass>com.github.adinsa.picevolve.App</mainClass>
+                  <mainClass>com.github.adinsa.picevolve.cli.App</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>

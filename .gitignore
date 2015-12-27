@@ -1,0 +1,11 @@
+# Eclipse
+.classpath
+.settings
+.project
+
+# Maven
+target
+
+# PicEvolve
+.library.txt
+images

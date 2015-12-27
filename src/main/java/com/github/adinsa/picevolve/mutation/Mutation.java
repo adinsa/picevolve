@@ -1,10 +1,16 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.mutation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.adinsa.picevolve.Terminal.ScalarNode;
-import com.github.adinsa.picevolve.Terminal.VectorNode;
+import com.github.adinsa.picevolve.PicEvolve;
+import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.Terminal;
+import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
+import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
+import com.github.adinsa.picevolve.random.Random;
+import com.github.adinsa.picevolve.random.RandomImpl;
 
 /**
  * Genetic operator used to evolve {@link Expression}s

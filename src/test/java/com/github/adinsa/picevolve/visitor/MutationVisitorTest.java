@@ -1,4 +1,4 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.visitor;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -14,12 +14,20 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.github.adinsa.picevolve.Function.Minus;
-import com.github.adinsa.picevolve.Function.Noise;
-import com.github.adinsa.picevolve.Function.Plus;
-import com.github.adinsa.picevolve.Terminal.ScalarNode;
-import com.github.adinsa.picevolve.Terminal.VariableNode;
-import com.github.adinsa.picevolve.Terminal.VectorNode;
+import com.github.adinsa.picevolve.PicEvolve;
+import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.Function.Minus;
+import com.github.adinsa.picevolve.expression.Function.Noise;
+import com.github.adinsa.picevolve.expression.Function.Plus;
+import com.github.adinsa.picevolve.expression.Terminal;
+import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
+import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
+import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
+import com.github.adinsa.picevolve.expression.Variable;
+import com.github.adinsa.picevolve.mutation.Mutation;
+import com.github.adinsa.picevolve.random.Random;
+import com.github.adinsa.picevolve.visitor.MutationVisitor;
 
 public class MutationVisitorTest {
 

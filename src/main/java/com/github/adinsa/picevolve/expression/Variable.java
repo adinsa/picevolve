@@ -1,4 +1,4 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.expression;
 
 import java.util.Arrays;
 import java.util.Optional;

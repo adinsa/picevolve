@@ -1,11 +1,16 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.visitor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.adinsa.picevolve.Terminal.ScalarNode;
-import com.github.adinsa.picevolve.Terminal.VariableNode;
-import com.github.adinsa.picevolve.Terminal.VectorNode;
+import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
+import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
+import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
+import com.github.adinsa.picevolve.mutation.Mutation;
+import com.github.adinsa.picevolve.random.Random;
+import com.github.adinsa.picevolve.random.RandomImpl;
 
 /**
  * {@link Visitor} implementation that applies genetic {@link Mutation}

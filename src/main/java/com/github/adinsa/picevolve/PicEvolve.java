@@ -14,6 +14,16 @@ import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.Terminal;
+import com.github.adinsa.picevolve.expression.Variable;
+import com.github.adinsa.picevolve.random.Random;
+import com.github.adinsa.picevolve.random.RandomImpl;
+import com.github.adinsa.picevolve.visitor.EvaluatorVisitor;
+import com.github.adinsa.picevolve.visitor.MutationVisitor;
+import com.github.adinsa.picevolve.visitor.Visitor;
+
 public class PicEvolve {
 
     private static final Logger logger = LoggerFactory
@@ -44,8 +54,12 @@ public class PicEvolve {
         this.addFunction(new Function.Max());
         this.addFunction(new Function.Abs());
         this.addFunction(new Function.Mod());
-        this.addFunction(new Function.And());
-        this.addFunction(new Function.Or());
+        this.addFunction(new Function.IntAnd());
+        this.addFunction(new Function.IntOr());
+        this.addFunction(new Function.IntXor());
+        this.addFunction(new Function.FloatAnd());
+        this.addFunction(new Function.FloatOr());
+        this.addFunction(new Function.FloatXor());
         this.addFunction(new Function.Noise());
         this.addFunction(new Function.WarpedNoise());
         this.addFunction(new Function.Blur());

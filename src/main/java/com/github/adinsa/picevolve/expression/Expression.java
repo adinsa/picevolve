@@ -1,8 +1,11 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.expression;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.github.adinsa.picevolve.Image;
+import com.github.adinsa.picevolve.visitor.Visitor;
 
 /**
  * Representation of a symbolic expression that serves as the genotype of a

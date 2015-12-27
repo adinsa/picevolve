@@ -1,12 +1,16 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.visitor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.github.adinsa.picevolve.Terminal.ScalarNode;
-import com.github.adinsa.picevolve.Terminal.VariableNode;
-import com.github.adinsa.picevolve.Terminal.VectorNode;
+import com.github.adinsa.picevolve.Image;
+import com.github.adinsa.picevolve.expression.Argument;
+import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
+import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
+import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
 
 /**
  * {@link Visitor} implementation that evaluates an {@link Expression} into an

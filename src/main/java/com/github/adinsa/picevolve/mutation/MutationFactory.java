@@ -1,4 +1,4 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.mutation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,16 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.adinsa.picevolve.Mutation.AdjustScalarMutation;
-import com.github.adinsa.picevolve.Mutation.AdjustVectorMutation;
-import com.github.adinsa.picevolve.Mutation.BecomeArgumentMutation;
-import com.github.adinsa.picevolve.Mutation.BecomeNodeCopyMutation;
-import com.github.adinsa.picevolve.Mutation.ChangeFunctionMutation;
-import com.github.adinsa.picevolve.Mutation.RandomExpressionMutation;
-import com.github.adinsa.picevolve.Mutation.ReplaceWithArgumentMutation;
-import com.github.adinsa.picevolve.Terminal.ScalarNode;
-import com.github.adinsa.picevolve.Terminal.VariableNode;
-import com.github.adinsa.picevolve.Terminal.VectorNode;
+import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
+import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
+import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
+import com.github.adinsa.picevolve.mutation.Mutation.AdjustScalarMutation;
+import com.github.adinsa.picevolve.mutation.Mutation.AdjustVectorMutation;
+import com.github.adinsa.picevolve.mutation.Mutation.BecomeArgumentMutation;
+import com.github.adinsa.picevolve.mutation.Mutation.BecomeNodeCopyMutation;
+import com.github.adinsa.picevolve.mutation.Mutation.ChangeFunctionMutation;
+import com.github.adinsa.picevolve.mutation.Mutation.RandomExpressionMutation;
+import com.github.adinsa.picevolve.mutation.Mutation.ReplaceWithArgumentMutation;
+import com.github.adinsa.picevolve.random.Random;
 
 /**
  * Defines which {@link Mutation} implementations may be applied to each type of

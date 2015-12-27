@@ -6,8 +6,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.github.adinsa.picevolve.Terminal.ScalarNode;
-import com.github.adinsa.picevolve.Terminal.VariableNode;
+import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
+import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
+import com.github.adinsa.picevolve.expression.Variable;
 
 public class PicEvolveTest {
 

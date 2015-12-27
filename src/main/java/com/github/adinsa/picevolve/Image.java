@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import com.github.adinsa.picevolve.expression.Expression;
+
 /**
  * A 2D image containing pixels with RGB color values. The phenotype of a
  * PicEvolve {@link Expression}.
@@ -86,18 +88,18 @@ public class Image {
     }
 
     /**
-     * Writes Image to a PNG file.
+     * Writes image to file in the specified format.
      *
-     * @param filename
-     *            Without extension
+     * @param file
+     * @param formatName
      */
-    public void write(final String filename) {
+    public void write(final File file, final String formatName) {
         final BufferedImage buf = this.asBufferedImage();
         try {
-            ImageIO.write(buf, "png", new File(filename + ".png"));
+            ImageIO.write(buf, formatName, file);
         } catch (final IOException e) {
             throw new RuntimeException(
-                    String.format("Error writing file: '%s'", filename));
+                    String.format("Error writing file: '%s'", file.getPath()));
         }
     }
 

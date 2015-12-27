@@ -1,4 +1,4 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,10 +9,16 @@ import java.util.Queue;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
-import com.github.adinsa.picevolve.MutationFactory.MutationFrequency;
-import com.github.adinsa.picevolve.Terminal.ScalarNode;
-import com.github.adinsa.picevolve.Terminal.VariableNode;
-import com.github.adinsa.picevolve.Terminal.VectorNode;
+import com.github.adinsa.picevolve.PicEvolve;
+import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
+import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
+import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
+import com.github.adinsa.picevolve.expression.Variable;
+import com.github.adinsa.picevolve.mutation.Mutation;
+import com.github.adinsa.picevolve.mutation.MutationFactory;
+import com.github.adinsa.picevolve.mutation.MutationFactory.MutationFrequency;
 
 public class RandomImpl implements Random {
 

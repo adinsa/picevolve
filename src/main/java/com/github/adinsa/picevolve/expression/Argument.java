@@ -1,8 +1,9 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.expression;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
+import com.github.adinsa.picevolve.Image;
 import com.github.adinsa.picevolve.Image.Pixel;
 
 /**
@@ -60,7 +61,7 @@ public abstract class Argument<T> {
                 }
                 yCur--;
             }
-            return image;
+            return image.scaled(-1, 1);
         }
     }
 

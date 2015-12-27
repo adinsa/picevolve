@@ -1,7 +1,13 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.random;
 
-import com.github.adinsa.picevolve.Terminal.ScalarNode;
-import com.github.adinsa.picevolve.Terminal.VectorNode;
+import com.github.adinsa.picevolve.PicEvolve;
+import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.Terminal;
+import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
+import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
+import com.github.adinsa.picevolve.mutation.Mutation;
+import com.github.adinsa.picevolve.mutation.MutationFactory;
 
 /**
  * Wraps all non-deterministic behavior involved in performing genetic

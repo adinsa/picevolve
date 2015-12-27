@@ -1,6 +1,9 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.expression;
 
 import java.util.List;
+
+import com.github.adinsa.picevolve.Image;
+import com.github.adinsa.picevolve.visitor.Visitor;
 
 /**
  * A terminal {@link Expression} node
