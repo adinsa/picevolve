@@ -27,7 +27,6 @@ import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
 import com.github.adinsa.picevolve.expression.Variable;
 import com.github.adinsa.picevolve.mutation.Mutation;
 import com.github.adinsa.picevolve.random.Random;
-import com.github.adinsa.picevolve.visitor.MutationVisitor;
 
 public class MutationVisitorTest {
 
