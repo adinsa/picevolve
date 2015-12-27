@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.adinsa.picevolve.Image;
 import com.github.adinsa.picevolve.PicEvolve;
 import com.github.adinsa.picevolve.expression.Expression;
 import com.github.adinsa.picevolve.visitor.EvaluatorVisitor;
@@ -40,14 +39,26 @@ public class App {
 
     private List<Expression> population;
     private final PicEvolve picEvolve;
+    private final ExecutorService executor;
 
     public App() {
         this.population = new ArrayList<Expression>();
         this.picEvolve = new PicEvolve();
+
+        final int numProcessors = Runtime.getRuntime().availableProcessors();
+        logger.debug("availableProcessors: {}", numProcessors);
+        this.executor = Executors.newFixedThreadPool(numProcessors);
     }
 
-    public static void main(final String[] args) throws IOException {
-        new CommandRunner(new App()).mainLoop(System.in, System.out);
+    public static void main(final String[] args)
+            throws IOException, InterruptedException {
+
+        final App app = new App();
+        new CommandRunner(app).mainLoop(System.in, System.out);
+
+        logger.info("Shutting down...");
+        app.executor.shutdown();
+        app.executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
     }
 
     @Command(description = "Initialize a population of random images", prompts = {
@@ -85,9 +96,8 @@ public class App {
     public void generate(final int expressionId, final int width,
             final int height, final String filename) {
 
-        final Image image = this.picEvolve
-                .evaluate(this.getExpression(expressionId), width, height);
-        image.write(new File(filename), IMAGE_FORMAT);
+        this.executor.submit(new EvaluationTask(new File(filename),
+                this.getExpression(expressionId), width, height));
     }
 
     @Command(description = "Load saved image expressions")
@@ -169,23 +179,11 @@ public class App {
     private void generateImages(final List<Expression> population)
             throws IOException {
 
-        final int numProcessors = Runtime.getRuntime().availableProcessors();
-        logger.debug("availableProcessors: {}", numProcessors);
-
-        final ExecutorService service = Executors
-                .newFixedThreadPool(numProcessors);
         for (int i = 0; i < population.size(); i++) {
             System.out.println(i + ": " + population.get(i));
-            service.submit(new EvaluationTask(
+            this.executor.submit(new EvaluationTask(
                     new File(this.getImagesDirectory(), i + "." + IMAGE_FORMAT),
                     population.get(i), PREVIEW_WIDTH, PREVIEW_HEIGHT));
-        }
-        service.shutdown();
-        try {
-            service.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        } catch (final InterruptedException e) {
-            logger.error("Error: ", e);
-            throw new RuntimeException(e);
         }
     }
 
@@ -204,9 +202,14 @@ public class App {
 
         @Override
         public void run() {
-
-            this.expression.accept(this.evaluator);
-            this.evaluator.getImage().scaled().write(this.file, IMAGE_FORMAT);
+            try {
+                this.expression.accept(this.evaluator);
+                this.evaluator.getImage().scaled().write(this.file,
+                        IMAGE_FORMAT);
+            } catch (final Throwable t) {
+                logger.error("Error:", t);
+                throw t;
+            }
         }
     }
 }
