@@ -40,33 +40,39 @@ public class PicEvolve {
 
         this.random = random;
 
-        this.addFunction(new Function.Plus());
-        this.addFunction(new Function.Minus());
-        this.addFunction(new Function.Multiply());
-        this.addFunction(new Function.Divide());
-        this.addFunction(new Function.Round());
-        this.addFunction(new Function.Expt());
-        this.addFunction(new Function.Log());
-        this.addFunction(new Function.Sine());
-        this.addFunction(new Function.Cosine());
-        this.addFunction(new Function.Tangent());
-        this.addFunction(new Function.Min());
-        this.addFunction(new Function.Max());
-        this.addFunction(new Function.Abs());
-        this.addFunction(new Function.Mod());
-        this.addFunction(new Function.IntAnd());
-        this.addFunction(new Function.IntOr());
-        this.addFunction(new Function.IntXor());
-        this.addFunction(new Function.FloatAnd());
-        this.addFunction(new Function.FloatOr());
-        this.addFunction(new Function.FloatXor());
-        this.addFunction(new Function.Noise());
-        this.addFunction(new Function.WarpedNoise());
-        this.addFunction(new Function.Blur());
-        this.addFunction(new Function.Sharpen());
-        this.addFunction(new Function.Emboss());
+        this.addFunctions(new Function[] { 
+                new Function.Plus(),
+                new Function.Minus(), 
+                new Function.Multiply(),
+                new Function.Divide(), 
+                new Function.Round(),
+                new Function.Expt(), 
+                new Function.Log(), 
+                new Function.Sine(),
+                new Function.Cosine(), 
+                new Function.Tangent(),
+                new Function.Min(), 
+                new Function.Max(), 
+                new Function.Abs(),
+                new Function.Mod(), 
+                new Function.IntAnd(), 
+                new Function.IntOr(),
+                new Function.IntXor(), 
+                new Function.FloatAnd(),
+                new Function.FloatOr(), 
+                new Function.FloatXor(),
+                new Function.Noise(), 
+                new Function.WarpedNoise(),
+                new Function.Blur(), 
+                new Function.Sharpen(),
+                new Function.Emboss() 
+        });
     }
 
+    private final void addFunctions(final Function... functions) {
+        Arrays.asList(functions).stream().forEach(func -> addFunction(func));
+    }
+    
     private final void addFunction(final Function function) {
         if (this.functionMap.containsKey(function.getName())) {
             throw new IllegalArgumentException(
