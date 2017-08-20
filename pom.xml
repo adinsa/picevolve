@@ -49,28 +49,24 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.0.0</version>
         <executions>
           <execution>
-            <id>build</id>
-            <configuration>
-              <finalName>${project.artifactId}</finalName>
-              <archive>
-                <manifest>
-                  <mainClass>com.github.adinsa.picevolve.cli.App</mainClass>
-                </manifest>
-              </archive>
-              <descriptorRefs>
-                <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
-              <appendAssemblyId>false</appendAssemblyId>
-              <attach>false</attach>
-            </configuration>
             <phase>package</phase>
             <goals>
-              <goal>single</goal>
+              <goal>shade</goal>
             </goals>
+            <configuration>
+              <transformers>
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.github.adinsa.picevolve.cli.App</mainClass>
+                </transformer>
+              </transformers>
+              <finalName>${project.artifactId}</finalName>
+            </configuration>
           </execution>
         </executions>
       </plugin>
