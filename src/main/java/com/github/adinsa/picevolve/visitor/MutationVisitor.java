@@ -13,16 +13,14 @@ import com.github.adinsa.picevolve.random.Random;
 import com.github.adinsa.picevolve.random.RandomImpl;
 
 /**
- * {@link Visitor} implementation that applies genetic {@link Mutation}
- * operations on an {@link Expression} tree
+ * {@link Visitor} implementation that applies genetic {@link Mutation} operations on an {@link Expression} tree
  *
  * @author amar
  *
  */
 public class MutationVisitor implements Visitor {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(MutationVisitor.class);
+    private static final Logger logger = LoggerFactory.getLogger(MutationVisitor.class);
 
     private static final double DEFAULT_GLOBAL_MUTATION_FREQUENCY = 0.4;
 
@@ -41,8 +39,7 @@ public class MutationVisitor implements Visitor {
         this(new RandomImpl(), globalMutationFrequency);
     }
 
-    public MutationVisitor(final Random random,
-            final double globalMutationFrequency) {
+    public MutationVisitor(final Random random, final double globalMutationFrequency) {
         this.random = random;
         this.globalMutationFrequency = globalMutationFrequency;
     }
@@ -50,14 +47,11 @@ public class MutationVisitor implements Visitor {
     @Override
     public void visit(final ScalarNode scalarNode) {
 
-        if (this.random.shouldMutate(scalarNode,
-                this.globalMutationFrequency)) {
+        if (random.shouldMutate(scalarNode, globalMutationFrequency)) {
 
-            final Mutation mutation = this.random
-                    .nextMutation(ScalarNode.class);
+            final Mutation mutation = random.nextMutation(ScalarNode.class);
 
-            logger.debug(mutation.getClass().getSimpleName() + ": {}",
-                    scalarNode);
+            logger.debug(mutation.getClass().getSimpleName() + ": {}", scalarNode);
 
             mutation.mutate(scalarNode);
 
@@ -67,14 +61,11 @@ public class MutationVisitor implements Visitor {
     @Override
     public void visit(final VectorNode vectorNode) {
 
-        if (this.random.shouldMutate(vectorNode,
-                this.globalMutationFrequency)) {
+        if (random.shouldMutate(vectorNode, globalMutationFrequency)) {
 
-            final Mutation mutation = this.random
-                    .nextMutation(VectorNode.class);
+            final Mutation mutation = random.nextMutation(VectorNode.class);
 
-            logger.debug(mutation.getClass().getSimpleName() + ": {}",
-                    vectorNode);
+            logger.debug(mutation.getClass().getSimpleName() + ": {}", vectorNode);
 
             mutation.mutate(vectorNode);
         }
@@ -83,14 +74,11 @@ public class MutationVisitor implements Visitor {
     @Override
     public void visit(final VariableNode variableNode) {
 
-        if (this.random.shouldMutate(variableNode,
-                this.globalMutationFrequency)) {
+        if (random.shouldMutate(variableNode, globalMutationFrequency)) {
 
-            final Mutation mutation = this.random
-                    .nextMutation(VariableNode.class);
+            final Mutation mutation = random.nextMutation(VariableNode.class);
 
-            logger.debug(mutation.getClass().getSimpleName() + ": {}",
-                    variableNode);
+            logger.debug(mutation.getClass().getSimpleName() + ": {}", variableNode);
 
             mutation.mutate(variableNode);
         }
@@ -99,13 +87,11 @@ public class MutationVisitor implements Visitor {
     @Override
     public void visit(final Function functionNode) {
 
-        if (this.random.shouldMutate(functionNode, this.globalMutationFrequency)
-                && functionNode.getParent() != null) {
+        if (random.shouldMutate(functionNode, globalMutationFrequency) && functionNode.getParent() != null) {
 
-            final Mutation mutation = this.random.nextMutation(Function.class);
+            final Mutation mutation = random.nextMutation(Function.class);
 
-            logger.debug(mutation.getClass().getSimpleName() + ": {}",
-                    functionNode);
+            logger.debug(mutation.getClass().getSimpleName() + ": {}", functionNode);
 
             mutation.mutate(functionNode);
         }

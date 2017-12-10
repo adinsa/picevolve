@@ -6,8 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used by {@link CommandRunner} that provides command description
- * and prompt messages.
+ * Annotation used by {@link CommandRunner} that provides command description and prompt messages.
  *
  * @author amar
  *
@@ -22,8 +21,7 @@ public @interface Command {
     String description();
 
     /**
-     * The prompt messages to use when getting input for each of the command's
-     * parameters
+     * The prompt messages to use when getting input for each of the command's parameters
      */
     String[] prompts() default {};
 }

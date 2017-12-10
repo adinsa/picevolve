@@ -31,18 +31,18 @@ public abstract class Function extends Expression {
     }
 
     public int getArity() {
-        return this.arity;
+        return arity;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public abstract Function copy();
 
     @Override
     public void accept(final Visitor visitor) {
-        for (final Expression child : this.getChildren()) {
+        for (final Expression child : getChildren()) {
             child.accept(visitor);
         }
         visitor.visit(this);
@@ -50,34 +50,29 @@ public abstract class Function extends Expression {
 
     @Override
     public String toString() {
-        return "(" + this.getName() + " " + this.getChildren().stream()
-                .map(child -> child.toString()).collect(Collectors.joining(" "))
-                + ")";
+        return "(" + getName() + " "
+                + getChildren().stream().map(child -> child.toString()).collect(Collectors.joining(" ")) + ")";
     }
 
-    protected Image pixelOperation(final int width, final int height,
-            final List<Argument<?>> arguments,
+    protected Image pixelOperation(final int width, final int height, final List<Argument<?>> arguments,
             final java.util.function.Function<Pixel, Pixel> pixelOp) {
 
         final Image arg = arguments.get(0).toImage(width, height);
         final Image newImage = new Image(width, height);
         IntStream.range(0, height)
-                .forEach(y -> IntStream.range(0, width).forEach(
-                        x -> newImage.set(x, y, pixelOp.apply(arg.get(x, y)))));
+                .forEach(y -> IntStream.range(0, width).forEach(x -> newImage.set(x, y, pixelOp.apply(arg.get(x, y)))));
 
         return newImage;
     }
 
-    protected Image pixelOperation(final int width, final int height,
-            final List<Argument<?>> arguments,
+    protected Image pixelOperation(final int width, final int height, final List<Argument<?>> arguments,
             final BiFunction<Pixel, Pixel, Pixel> pixelOp) {
 
         final Image left = arguments.get(0).toImage(width, height);
         final Image right = arguments.get(1).toImage(width, height);
         final Image newImage = new Image(width, height);
-        IntStream.range(0, height).forEach(
-                y -> IntStream.range(0, width).forEach(x -> newImage.set(x, y,
-                        pixelOp.apply(left.get(x, y), right.get(x, y)))));
+        IntStream.range(0, height).forEach(y -> IntStream.range(0, width)
+                .forEach(x -> newImage.set(x, y, pixelOp.apply(left.get(x, y), right.get(x, y)))));
 
         return newImage;
     }
@@ -89,12 +84,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel().r(p1.r() + p2.r())
-                            .g(p1.g() + p2.g()).b(p1.b() + p2.b()));
+                    (p1, p2) -> new Pixel().r(p1.r() + p2.r()).g(p1.g() + p2.g()).b(p1.b() + p2.b()));
 
         }
 
@@ -111,12 +104,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel().r(p1.r() - p2.r())
-                            .g(p1.g() - p2.g()).b(p1.b() - p2.b()));
+                    (p1, p2) -> new Pixel().r(p1.r() - p2.r()).g(p1.g() - p2.g()).b(p1.b() - p2.b()));
         }
 
         @Override
@@ -132,12 +123,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel().r(p1.r() * p2.r())
-                            .g(p1.g() * p2.g()).b(p1.b() * p2.b()));
+                    (p1, p2) -> new Pixel().r(p1.r() * p2.r()).g(p1.g() * p2.g()).b(p1.b() * p2.b()));
         }
 
         @Override
@@ -153,12 +142,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel().r(p2.r() == 0 ? 1 : p1.r() / p2.r())
-                            .g(p2.g() == 0 ? 1 : p1.g() / p2.g())
+                    (p1, p2) -> new Pixel().r(p2.r() == 0 ? 1 : p1.r() / p2.r()).g(p2.g() == 0 ? 1 : p1.g() / p2.g())
                             .b(p2.b() == 0 ? 1 : p1.b() / p2.b()));
         }
 
@@ -175,12 +162,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    (p) -> new Pixel().r(Math.exp(p.r())).g(Math.exp(p.g()))
-                            .b(Math.exp(p.b())));
+                    (p) -> new Pixel().r(Math.exp(p.r())).g(Math.exp(p.g())).b(Math.exp(p.b())));
         }
 
         @Override
@@ -196,13 +181,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    (p) -> new Pixel().r(Math.log(this.clamp(p.r())))
-                            .g(Math.log(this.clamp(p.g())))
-                            .b(Math.log(this.clamp(p.b()))));
+                    (p) -> new Pixel().r(Math.log(clamp(p.r()))).g(Math.log(clamp(p.g()))).b(Math.log(clamp(p.b()))));
         }
 
         @Override
@@ -222,13 +204,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            return this.pixelOperation(width, height, arguments,
-                    (p) -> new Pixel().r(Math.round((float) p.r()))
-                            .g(Math.round((float) p.g()))
-                            .b(Math.round((float) p.b())));
+            return this.pixelOperation(width, height, arguments, (p) -> new Pixel().r(Math.round((float) p.r()))
+                    .g(Math.round((float) p.g())).b(Math.round((float) p.b())));
         }
 
         @Override
@@ -244,12 +223,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    p -> new Pixel().r(Math.sin(p.r())).g(Math.sin(p.g()))
-                            .b(Math.sin(p.b())));
+                    p -> new Pixel().r(Math.sin(p.r())).g(Math.sin(p.g())).b(Math.sin(p.b())));
         }
 
         @Override
@@ -265,12 +242,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    p -> new Pixel().r(Math.cos(p.r())).g(Math.cos(p.g()))
-                            .b(Math.cos(p.b())));
+                    p -> new Pixel().r(Math.cos(p.r())).g(Math.cos(p.g())).b(Math.cos(p.b())));
         }
 
         @Override
@@ -286,12 +261,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    p -> new Pixel().r(Math.tan(p.r())).g(Math.tan(p.g()))
-                            .b(Math.tan(p.b())));
+                    p -> new Pixel().r(Math.tan(p.r())).g(Math.tan(p.g())).b(Math.tan(p.b())));
         }
 
         @Override
@@ -307,13 +280,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel().r(Math.min(p1.r(), p2.r()))
-                            .g(Math.min(p1.g(), p2.g()))
-                            .b(Math.min(p1.b(), p2.b())));
+            return this.pixelOperation(width, height, arguments, (p1, p2) -> new Pixel().r(Math.min(p1.r(), p2.r()))
+                    .g(Math.min(p1.g(), p2.g())).b(Math.min(p1.b(), p2.b())));
         }
 
         @Override
@@ -329,13 +299,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel().r(Math.max(p1.r(), p2.r()))
-                            .g(Math.max(p1.g(), p2.g()))
-                            .b(Math.max(p1.b(), p2.b())));
+            return this.pixelOperation(width, height, arguments, (p1, p2) -> new Pixel().r(Math.max(p1.r(), p2.r()))
+                    .g(Math.max(p1.g(), p2.g())).b(Math.max(p1.b(), p2.b())));
         }
 
         @Override
@@ -351,12 +318,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    (p) -> new Pixel().r(Math.abs(p.r())).g(Math.abs(p.g()))
-                            .b(Math.abs(p.b())));
+                    (p) -> new Pixel().r(Math.abs(p.r())).g(Math.abs(p.g())).b(Math.abs(p.b())));
         }
 
         @Override
@@ -372,12 +337,10 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel().r(p2.r() == 0 ? 1 : p1.r() % p2.r())
-                            .g(p2.g() == 0 ? 1 : p1.g() % p2.g())
+                    (p1, p2) -> new Pixel().r(p2.r() == 0 ? 1 : p1.r() % p2.r()).g(p2.g() == 0 ? 1 : p1.g() % p2.g())
                             .b(p2.b() == 0 ? 1 : p1.b() % p2.b()));
         }
 
@@ -394,24 +357,17 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            final Image left = arguments.get(0).toImage(width, height)
-                    .scaled(128, 255);
-            final Image right = arguments.get(1).toImage(width, height)
-                    .scaled(128, 255);
+            final Image left = arguments.get(0).toImage(width, height).scaled(128, 255);
+            final Image right = arguments.get(1).toImage(width, height).scaled(128, 255);
             final Image newImage = new Image(width, height);
             IntStream.range(0, height)
                     .forEach(y -> IntStream.range(0, width)
                             .forEach(x -> newImage.set(x, y,
-                                    new Pixel()
-                                            .r((int) left.get(x, y).r()
-                                                    & (int) right.get(x, y).r())
-                                            .g((int) left.get(x, y).g()
-                                                    & (int) right.get(x, y).g())
-                            .b((int) left.get(x, y).b()
-                                    & (int) right.get(x, y).b()))));
+                                    new Pixel().r((int) left.get(x, y).r() & (int) right.get(x, y).r())
+                                            .g((int) left.get(x, y).g() & (int) right.get(x, y).g())
+                                            .b((int) left.get(x, y).b() & (int) right.get(x, y).b()))));
 
             return newImage;
         }
@@ -429,24 +385,17 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            final Image left = arguments.get(0).toImage(width, height)
-                    .scaled(128, 255);
-            final Image right = arguments.get(1).toImage(width, height)
-                    .scaled(128, 255);
+            final Image left = arguments.get(0).toImage(width, height).scaled(128, 255);
+            final Image right = arguments.get(1).toImage(width, height).scaled(128, 255);
             final Image newImage = new Image(width, height);
             IntStream.range(0, height)
                     .forEach(y -> IntStream.range(0, width)
                             .forEach(x -> newImage.set(x, y,
-                                    new Pixel()
-                                            .r((int) left.get(x, y).r()
-                                                    | (int) right.get(x, y).r())
-                                            .g((int) left.get(x, y).g()
-                                                    | (int) right.get(x, y).g())
-                            .b((int) left.get(x, y).b()
-                                    | (int) right.get(x, y).b()))));
+                                    new Pixel().r((int) left.get(x, y).r() | (int) right.get(x, y).r())
+                                            .g((int) left.get(x, y).g() | (int) right.get(x, y).g())
+                                            .b((int) left.get(x, y).b() | (int) right.get(x, y).b()))));
 
             return newImage;
         }
@@ -464,24 +413,17 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            final Image left = arguments.get(0).toImage(width, height)
-                    .scaled(128, 255);
-            final Image right = arguments.get(1).toImage(width, height)
-                    .scaled(128, 255);
+            final Image left = arguments.get(0).toImage(width, height).scaled(128, 255);
+            final Image right = arguments.get(1).toImage(width, height).scaled(128, 255);
             final Image newImage = new Image(width, height);
             IntStream.range(0, height)
                     .forEach(y -> IntStream.range(0, width)
                             .forEach(x -> newImage.set(x, y,
-                                    new Pixel()
-                                            .r((int) left.get(x, y).r()
-                                                    ^ (int) right.get(x, y).r())
-                                            .g((int) left.get(x, y).g()
-                                                    ^ (int) right.get(x, y).g())
-                            .b((int) left.get(x, y).b()
-                                    ^ (int) right.get(x, y).b()))));
+                                    new Pixel().r((int) left.get(x, y).r() ^ (int) right.get(x, y).r())
+                                            .g((int) left.get(x, y).g() ^ (int) right.get(x, y).g())
+                                            .b((int) left.get(x, y).b() ^ (int) right.get(x, y).b()))));
 
             return newImage;
         }
@@ -499,20 +441,12 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel()
-                            .r(Double.longBitsToDouble(
-                                    Double.doubleToLongBits(p1.r())
-                                            & Double.doubleToLongBits(p2.r())))
-                            .g(Double.longBitsToDouble(
-                                    Double.doubleToLongBits(p1.g())
-                                            & Double.doubleToLongBits(p2.g())))
-                            .b(Double.longBitsToDouble(
-                                    Double.doubleToLongBits(p1.b()) & Double
-                                            .doubleToLongBits(p2.b()))));
+            return this.pixelOperation(width, height, arguments, (p1, p2) -> new Pixel()
+                    .r(Double.longBitsToDouble(Double.doubleToLongBits(p1.r()) & Double.doubleToLongBits(p2.r())))
+                    .g(Double.longBitsToDouble(Double.doubleToLongBits(p1.g()) & Double.doubleToLongBits(p2.g())))
+                    .b(Double.longBitsToDouble(Double.doubleToLongBits(p1.b()) & Double.doubleToLongBits(p2.b()))));
         }
 
         @Override
@@ -528,20 +462,12 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel()
-                            .r(Double.longBitsToDouble(
-                                    Double.doubleToLongBits(p1.r())
-                                            | Double.doubleToLongBits(p2.r())))
-                            .g(Double.longBitsToDouble(
-                                    Double.doubleToLongBits(p1.g())
-                                            | Double.doubleToLongBits(p2.g())))
-                            .b(Double.longBitsToDouble(
-                                    Double.doubleToLongBits(p1.b()) | Double
-                                            .doubleToLongBits(p2.b()))));
+            return this.pixelOperation(width, height, arguments, (p1, p2) -> new Pixel()
+                    .r(Double.longBitsToDouble(Double.doubleToLongBits(p1.r()) | Double.doubleToLongBits(p2.r())))
+                    .g(Double.longBitsToDouble(Double.doubleToLongBits(p1.g()) | Double.doubleToLongBits(p2.g())))
+                    .b(Double.longBitsToDouble(Double.doubleToLongBits(p1.b()) | Double.doubleToLongBits(p2.b()))));
         }
 
         @Override
@@ -557,20 +483,12 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            return this.pixelOperation(width, height, arguments,
-                    (p1, p2) -> new Pixel()
-                            .r(Double.longBitsToDouble(
-                                    Double.doubleToLongBits(p1.r())
-                                            ^ Double.doubleToLongBits(p2.r())))
-                            .g(Double.longBitsToDouble(
-                                    Double.doubleToLongBits(p1.g())
-                                            ^ Double.doubleToLongBits(p2.g())))
-                            .b(Double.longBitsToDouble(
-                                    Double.doubleToLongBits(p1.b()) ^ Double
-                                            .doubleToLongBits(p2.b()))));
+            return this.pixelOperation(width, height, arguments, (p1, p2) -> new Pixel()
+                    .r(Double.longBitsToDouble(Double.doubleToLongBits(p1.r()) ^ Double.doubleToLongBits(p2.r())))
+                    .g(Double.longBitsToDouble(Double.doubleToLongBits(p1.g()) ^ Double.doubleToLongBits(p2.g())))
+                    .b(Double.longBitsToDouble(Double.doubleToLongBits(p1.b()) ^ Double.doubleToLongBits(p2.b()))));
         }
 
         @Override
@@ -586,25 +504,19 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             final Image arg1 = arguments.get(0).toImage(width, height).scaled();
             final Image arg2 = arguments.get(1).toImage(width, height).scaled();
             final Image arg3 = arguments.get(2).toImage(width, height).scaled();
             final Image newImage = new Image(width, height);
 
-            IntStream.range(0, height)
-                    .forEach(y -> IntStream.range(0, width).forEach(x -> {
-                        newImage.set(x, y, new Pixel()
-                                .r(ImprovedNoise.noise(arg1.get(x, y).r(),
-                                        arg2.get(x, y).r(), arg3.get(x, y).r()))
-                                .g(ImprovedNoise.noise(arg1.get(x, y).g(),
-                                        arg2.get(x, y).g(), arg3.get(x, y).g()))
-                                .b(ImprovedNoise.noise(arg1.get(x, y).b(),
-                                        arg2.get(x, y).b(),
-                                        arg3.get(x, y).b())));
-                    }));
+            IntStream.range(0, height).forEach(y -> IntStream.range(0, width).forEach(x -> {
+                newImage.set(x, y,
+                        new Pixel().r(ImprovedNoise.noise(arg1.get(x, y).r(), arg2.get(x, y).r(), arg3.get(x, y).r()))
+                                .g(ImprovedNoise.noise(arg1.get(x, y).g(), arg2.get(x, y).g(), arg3.get(x, y).g()))
+                                .b(ImprovedNoise.noise(arg1.get(x, y).b(), arg2.get(x, y).b(), arg3.get(x, y).b())));
+            }));
             return newImage;
         }
 
@@ -621,31 +533,23 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             final Image arg1 = arguments.get(0).toImage(width, height).scaled();
             final Image arg2 = arguments.get(1).toImage(width, height).scaled();
             final Image arg3 = arguments.get(2).toImage(width, height).scaled();
-            final Image arg4 = arguments.get(3).toImage(width, height).scaled(0,
-                    width - 1);
-            final Image arg5 = arguments.get(4).toImage(width, height).scaled(0,
-                    height - 1);
+            final Image arg4 = arguments.get(3).toImage(width, height).scaled(0, width - 1);
+            final Image arg5 = arguments.get(4).toImage(width, height).scaled(0, height - 1);
             final Image newImage = new Image(width, height);
 
-            IntStream.range(0, height)
-                    .forEach(y -> IntStream.range(0, width).forEach(x -> {
-                        final int newX = (int) Math.floor(arg4.get(x, y).r());
-                        final int newY = (int) Math.floor(arg5.get(x, y).g());
-                        newImage.set(newX, newY, new Pixel()
-                                .r(ImprovedNoise.noise(arg1.get(x, y).r(),
-                                        arg2.get(x, y).r(), arg3.get(x, y).r()))
-                                .g(ImprovedNoise.noise(arg1.get(x, y).g(),
-                                        arg2.get(x, y).g(), arg3.get(x, y).g()))
-                                .b(ImprovedNoise.noise(arg1.get(x, y).b(),
-                                        arg2.get(x, y).b(),
-                                        arg3.get(x, y).b())));
-                    }));
+            IntStream.range(0, height).forEach(y -> IntStream.range(0, width).forEach(x -> {
+                final int newX = (int) Math.floor(arg4.get(x, y).r());
+                final int newY = (int) Math.floor(arg5.get(x, y).g());
+                newImage.set(newX, newY,
+                        new Pixel().r(ImprovedNoise.noise(arg1.get(x, y).r(), arg2.get(x, y).r(), arg3.get(x, y).r()))
+                                .g(ImprovedNoise.noise(arg1.get(x, y).g(), arg2.get(x, y).g(), arg3.get(x, y).g()))
+                                .b(ImprovedNoise.noise(arg1.get(x, y).b(), arg2.get(x, y).b(), arg3.get(x, y).b())));
+            }));
             return newImage;
         }
 
@@ -662,8 +566,7 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             final int kernelSize = 400;
 
@@ -675,29 +578,22 @@ public abstract class Function extends Expression {
             final Image arg1 = arguments.get(0).toImage(width, height).scaled();
             final BufferedImage sourceImage = arg1.asBufferedImage();
 
-            final BufferedImage newSource = new BufferedImage(
-                    sourceImage.getWidth() + (int) Math.sqrt(kernelSize),
-                    sourceImage.getHeight() + (int) Math.sqrt(kernelSize),
-                    BufferedImage.TYPE_4BYTE_ABGR);
+            final BufferedImage newSource = new BufferedImage(sourceImage.getWidth() + (int) Math.sqrt(kernelSize),
+                    sourceImage.getHeight() + (int) Math.sqrt(kernelSize), BufferedImage.TYPE_4BYTE_ABGR);
             final Graphics2D g2 = newSource.createGraphics();
-            g2.drawImage(sourceImage, ((int) Math.sqrt(kernelSize)) / 2,
-                    ((int) Math.sqrt(kernelSize)) / 2, null);
+            g2.drawImage(sourceImage, (int) Math.sqrt(kernelSize) / 2, (int) Math.sqrt(kernelSize) / 2, null);
             g2.dispose();
 
             final BufferedImage destImage = null;
             final ConvolveOp op = new ConvolveOp(
-                    new Kernel((int) Math.sqrt(kernelSize),
-                            (int) Math.sqrt(kernelSize), kernelData),
+                    new Kernel((int) Math.sqrt(kernelSize), (int) Math.sqrt(kernelSize), kernelData),
                     ConvolveOp.EDGE_NO_OP, null);
             final BufferedImage blurredImage = op.filter(newSource, destImage);
 
-            final BufferedImage blurredCropped = new BufferedImage(width,
-                    height, BufferedImage.TYPE_4BYTE_ABGR);
+            final BufferedImage blurredCropped = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
             final Graphics g = blurredCropped.getGraphics();
-            g.drawImage(
-                    blurredImage.getSubimage(((int) Math.sqrt(kernelSize)) / 2,
-                            ((int) Math.sqrt(kernelSize)) / 2, width, height),
-                    0, 0, null);
+            g.drawImage(blurredImage.getSubimage((int) Math.sqrt(kernelSize) / 2, (int) Math.sqrt(kernelSize) / 2,
+                    width, height), 0, 0, null);
             g.dispose();
 
             return Image.fromBufferedImage(blurredCropped);
@@ -716,8 +612,7 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
             final float[] matrix = { 1, 1, 1, 1, -7, 1, 1, 1, 1 };
 
@@ -725,10 +620,8 @@ public abstract class Function extends Expression {
             final BufferedImage sourceImage = arg1.asBufferedImage();
 
             final BufferedImage destImage = null;
-            final ConvolveOp op = new ConvolveOp(new Kernel(3, 3, matrix),
-                    ConvolveOp.EDGE_NO_OP, null);
-            final BufferedImage sharpenedImage = op.filter(sourceImage,
-                    destImage);
+            final ConvolveOp op = new ConvolveOp(new Kernel(3, 3, matrix), ConvolveOp.EDGE_NO_OP, null);
+            final BufferedImage sharpenedImage = op.filter(sourceImage, destImage);
 
             return Image.fromBufferedImage(sharpenedImage);
         }
@@ -746,20 +639,17 @@ public abstract class Function extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
 
-            final float[] matrix = { -1, -1, -1, -1, 0, -1, -1, -1, 0, 1, -1,
-                    -1, 0, 1, 1, -1, 0, 1, 1, 1, 0, 1, 1, 1, 1 };
+            final float[] matrix = { -1, -1, -1, -1, 0, -1, -1, -1, 0, 1, -1, -1, 0, 1, 1, -1, 0, 1, 1, 1, 0, 1, 1, 1,
+                    1 };
 
             final Image arg1 = arguments.get(0).toImage(width, height).scaled();
             final BufferedImage sourceImage = arg1.asBufferedImage();
 
             final BufferedImage destImage = null;
-            final ConvolveOp op = new ConvolveOp(new Kernel(5, 5, matrix),
-                    ConvolveOp.EDGE_NO_OP, null);
-            final BufferedImage embossedImage = op.filter(sourceImage,
-                    destImage);
+            final ConvolveOp op = new ConvolveOp(new Kernel(5, 5, matrix), ConvolveOp.EDGE_NO_OP, null);
+            final BufferedImage embossedImage = op.filter(sourceImage, destImage);
 
             return Image.fromBufferedImage(embossedImage);
         }
@@ -771,25 +661,25 @@ public abstract class Function extends Expression {
     }
 
     /* @formatter:off */
-    
+
     /**
      * @see <a href="http://mrl.nyu.edu/~perlin/noise/">http://mrl.nyu.edu/~perlin/noise/</a>
      */
     // JAVA REFERENCE IMPLEMENTATION OF IMPROVED NOISE - COPYRIGHT 2002 KEN PERLIN.
     private static final class ImprovedNoise {
        static public double noise(double x, double y, double z) {
-          int X = (int)Math.floor(x) & 255,                  // FIND UNIT CUBE THAT
+          final int X = (int)Math.floor(x) & 255,                  // FIND UNIT CUBE THAT
               Y = (int)Math.floor(y) & 255,                  // CONTAINS POINT.
               Z = (int)Math.floor(z) & 255;
           x -= Math.floor(x);                                // FIND RELATIVE X,Y,Z
           y -= Math.floor(y);                                // OF POINT IN CUBE.
           z -= Math.floor(z);
-          double u = fade(x),                                // COMPUTE FADE CURVES
+          final double u = fade(x),                                // COMPUTE FADE CURVES
                  v = fade(y),                                // FOR EACH OF X,Y,Z.
                  w = fade(z);
-          int A = p[X  ]+Y, AA = p[A]+Z, AB = p[A+1]+Z,      // HASH COORDINATES OF
+          final int A = p[X  ]+Y, AA = p[A]+Z, AB = p[A+1]+Z,      // HASH COORDINATES OF
               B = p[X+1]+Y, BA = p[B]+Z, BB = p[B+1]+Z;      // THE 8 CUBE CORNERS,
-    
+
           return lerp(w, lerp(v, lerp(u, grad(p[AA  ], x  , y  , z   ),  // AND ADD
                                          grad(p[BA  ], x-1, y  , z   )), // BLENDED
                                  lerp(u, grad(p[AB  ], x  , y-1, z   ),  // RESULTS
@@ -799,11 +689,11 @@ public abstract class Function extends Expression {
                                  lerp(u, grad(p[AB+1], x  , y-1, z-1 ),
                                          grad(p[BB+1], x-1, y-1, z-1 ))));
        }
-       static double fade(double t) { return t * t * t * (t * (t * 6 - 15) + 10); }
-       static double lerp(double t, double a, double b) { return a + t * (b - a); }
-       static double grad(int hash, double x, double y, double z) {
-          int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
-          double u = h<8 ? x : y,                 // INTO 12 GRADIENT DIRECTIONS.
+       static double fade(final double t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+       static double lerp(final double t, final double a, final double b) { return a + t * (b - a); }
+       static double grad(final int hash, final double x, final double y, final double z) {
+          final int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
+          final double u = h<8 ? x : y,                 // INTO 12 GRADIENT DIRECTIONS.
                  v = h<4 ? y : h==12||h==14 ? x : z;
           return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
        }
@@ -821,9 +711,11 @@ public abstract class Function extends Expression {
        49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
        138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
        };
-       static { for (int i=0; i < 256 ; i++) p[256+i] = p[i] = permutation[i]; }
+       static { for (int i=0; i < 256 ; i++) {
+        p[256+i] = p[i] = permutation[i];
+    } }
     }
-    
+
     /* @formatter:on */
 
 }

@@ -18,8 +18,7 @@ import javax.imageio.ImageIO;
 import com.github.adinsa.picevolve.expression.Expression;
 
 /**
- * A 2D image containing pixels with RGB color values. The phenotype of a
- * PicEvolve {@link Expression}.
+ * A 2D image containing pixels with RGB color values. The phenotype of a PicEvolve {@link Expression}.
  *
  * @author amar
  *
@@ -35,17 +34,16 @@ public class Image {
         this.width = width;
         this.height = height;
 
-        this.pixels = new Pixel[height][width];
-        IntStream.range(0, height)
-                .forEach(y -> Arrays.fill(this.pixels[y], new Pixel(0)));
+        pixels = new Pixel[height][width];
+        IntStream.range(0, height).forEach(y -> Arrays.fill(pixels[y], new Pixel(0)));
     }
 
     public Pixel get(final int x, final int y) {
-        return new Pixel(this.pixels[y][x]);
+        return new Pixel(pixels[y][x]);
     }
 
     public void set(final int x, final int y, final Pixel pixel) {
-        this.pixels[y][x] = pixel;
+        pixels[y][x] = pixel;
     }
 
     /**
@@ -58,8 +56,7 @@ public class Image {
     }
 
     /**
-     * Returns copy of Image with all (r,g,b) values scaled between the minimum
-     * and maximum values specified.
+     * Returns copy of Image with all (r,g,b) values scaled between the minimum and maximum values specified.
      *
      * @param minimum
      * @param maximum
@@ -67,22 +64,18 @@ public class Image {
      */
     public Image scaled(final double minimum, final double maximum) {
 
-        final double oldMax = this.asDoubleStream().max().getAsDouble();
-        final double oldMin = this.asDoubleStream().min().getAsDouble();
+        final double oldMax = asDoubleStream().max().getAsDouble();
+        final double oldMin = asDoubleStream().min().getAsDouble();
 
-        final Image scaledImage = new Image(this.width, this.height);
+        final Image scaledImage = new Image(width, height);
 
-        final Function<Double, Double> scaleFunc = component -> (oldMax
-                - oldMin == 0) ? minimum
-                        : (((component - oldMin) * (maximum - minimum))
-                                / (oldMax - oldMin)) + minimum;
+        final Function<Double, Double> scaleFunc = component -> oldMax - oldMin == 0 ? minimum
+                : (component - oldMin) * (maximum - minimum) / (oldMax - oldMin) + minimum;
 
-        IntStream.range(0, this.height).forEach(y -> IntStream
-                .range(0, this.width)
-                .forEach(x -> scaledImage.set(x, y,
-                        this.get(x, y).r(scaleFunc.apply(this.get(x, y).r()))
-                                .g(scaleFunc.apply(this.get(x, y).g()))
-                                .b(scaleFunc.apply(this.get(x, y).b())))));
+        IntStream.range(0, height)
+                .forEach(y -> IntStream.range(0, width)
+                        .forEach(x -> scaledImage.set(x, y, get(x, y).r(scaleFunc.apply(get(x, y).r()))
+                                .g(scaleFunc.apply(get(x, y).g())).b(scaleFunc.apply(get(x, y).b())))));
 
         return scaledImage;
     }
@@ -94,12 +87,11 @@ public class Image {
      * @param formatName
      */
     public void write(final File file, final String formatName) {
-        final BufferedImage buf = this.asBufferedImage();
+        final BufferedImage buf = asBufferedImage();
         try {
             ImageIO.write(buf, formatName, file);
         } catch (final IOException e) {
-            throw new RuntimeException(
-                    String.format("Error writing file: '%s'", file.getPath()));
+            throw new RuntimeException(String.format("Error writing file: '%s'", file.getPath()));
         }
     }
 
@@ -109,16 +101,12 @@ public class Image {
      * @return
      */
     public BufferedImage asBufferedImage() {
-        final BufferedImage buf = new BufferedImage(this.width, this.height,
-                BufferedImage.TYPE_4BYTE_ABGR);
+        final BufferedImage buf = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         final Graphics graphics = buf.getGraphics();
-        IntStream.range(0, this.pixels.length).forEach(
-                y -> IntStream.range(0, this.pixels[y].length).forEach(x -> {
-                    graphics.setColor(new Color((float) this.get(x, y).r(),
-                            (float) this.get(x, y).g(),
-                            (float) this.get(x, y).b()));
-                    graphics.drawRect(x, y, 1, 1);
-                }));
+        IntStream.range(0, pixels.length).forEach(y -> IntStream.range(0, pixels[y].length).forEach(x -> {
+            graphics.setColor(new Color((float) get(x, y).r(), (float) get(x, y).g(), (float) get(x, y).b()));
+            graphics.drawRect(x, y, 1, 1);
+        }));
         return buf;
     }
 
@@ -131,18 +119,16 @@ public class Image {
     public static Image fromBufferedImage(final BufferedImage buf) {
 
         final Image image = new Image(buf.getWidth(), buf.getHeight());
-        final byte[] pixels = ((DataBufferByte) buf.getRaster().getDataBuffer())
-                .getData();
+        final byte[] pixels = ((DataBufferByte) buf.getRaster().getDataBuffer()).getData();
 
         for (int pixel = 0, row = 0, col = 0; pixel < pixels.length; pixel += 4) {
             int argb = 0;
-            argb += ((pixels[pixel] & 0xff) << 24); // alpha
-            argb += (pixels[pixel + 1] & 0xff); // blue
-            argb += ((pixels[pixel + 2] & 0xff) << 8); // green
-            argb += ((pixels[pixel + 3] & 0xff) << 16); // red
+            argb += (pixels[pixel] & 0xff) << 24; // alpha
+            argb += pixels[pixel + 1] & 0xff; // blue
+            argb += (pixels[pixel + 2] & 0xff) << 8; // green
+            argb += (pixels[pixel + 3] & 0xff) << 16; // red
             final Color color = new Color(argb);
-            image.set(col, row, new Pixel(color.getRed(), color.getBlue(),
-                    color.getBlue()));
+            image.set(col, row, new Pixel(color.getRed(), color.getBlue(), color.getBlue()));
             col++;
             if (col == buf.getWidth()) {
                 col = 0;
@@ -154,19 +140,17 @@ public class Image {
     }
 
     public double[] asDoubleArray() {
-        return this.asDoubleStream().toArray();
+        return asDoubleStream().toArray();
     }
 
     private DoubleStream asDoubleStream() {
-        return Arrays.stream(this.pixels).flatMap(row -> Arrays.stream(row))
-                .flatMap(pixel -> Stream.of(pixel.r(), pixel.g(), pixel.b()))
-                .mapToDouble(d -> d);
+        return Arrays.stream(pixels).flatMap(row -> Arrays.stream(row))
+                .flatMap(pixel -> Stream.of(pixel.r(), pixel.g(), pixel.b())).mapToDouble(d -> d);
     }
 
     @Override
     public String toString() {
-        return Arrays.stream(this.pixels).map(row -> Arrays.toString(row))
-                .collect(Collectors.joining("\n"));
+        return Arrays.stream(pixels).map(row -> Arrays.toString(row)).collect(Collectors.joining("\n"));
     }
 
     public static class Pixel {
@@ -208,20 +192,20 @@ public class Image {
         }
 
         public double r() {
-            return this.red;
+            return red;
         }
 
         public double g() {
-            return this.green;
+            return green;
         }
 
         public double b() {
-            return this.blue;
+            return blue;
         }
 
         @Override
         public String toString() {
-            return "(" + this.red + ", " + this.green + ", " + this.blue + ")";
+            return "(" + red + ", " + green + ", " + blue + ")";
         }
     }
 }

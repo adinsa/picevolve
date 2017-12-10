@@ -36,8 +36,8 @@ public abstract class Argument<T> {
         @Override
         public Image toImage(final int width, final int height) {
             final Image image = new Image(width, height);
-            IntStream.range(0, height).forEach(y -> IntStream.range(0, width)
-                    .forEach(x -> image.set(x, y, new Pixel(this.getValue()))));
+            IntStream.range(0, height)
+                    .forEach(y -> IntStream.range(0, width).forEach(x -> image.set(x, y, new Pixel(getValue()))));
             return image;
         }
     }
@@ -56,8 +56,7 @@ public abstract class Argument<T> {
             for (int y = 0; y < height; y++) {
                 xCur = -width / 2;
                 for (int x = 0; x < width; x++) {
-                    image.set(x, y, new Pixel(this.getValue().equals(Variable.X)
-                            ? xCur++ : yCur));
+                    image.set(x, y, new Pixel(getValue().equals(Variable.X) ? xCur++ : yCur));
                 }
                 yCur--;
             }
@@ -74,12 +73,8 @@ public abstract class Argument<T> {
         @Override
         public Image toImage(final int width, final int height) {
             final Image image = new Image(width, height);
-            IntStream.range(0, height)
-                    .forEach(y -> IntStream.range(0, width)
-                            .forEach(x -> image.set(x, y,
-                                    new Pixel(this.getValue().get(0),
-                                            this.getValue().get(1),
-                                            this.getValue().get(2)))));
+            IntStream.range(0, height).forEach(y -> IntStream.range(0, width)
+                    .forEach(x -> image.set(x, y, new Pixel(getValue().get(0), getValue().get(1), getValue().get(2)))));
             return image;
         }
     }
@@ -92,7 +87,7 @@ public abstract class Argument<T> {
 
         @Override
         public Image toImage(final int width, final int height) {
-            return this.getValue();
+            return getValue();
         }
     }
 }

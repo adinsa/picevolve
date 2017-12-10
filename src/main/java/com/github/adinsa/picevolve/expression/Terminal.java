@@ -35,10 +35,8 @@ public abstract class Terminal<T> extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
-            return new Argument.ScalarArgument(this.getValue()).toImage(width,
-                    height);
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
+            return new Argument.ScalarArgument(getValue()).toImage(width, height);
         }
 
         @Override
@@ -48,7 +46,7 @@ public abstract class Terminal<T> extends Expression {
 
         @Override
         public String toString() {
-            return String.valueOf(this.getValue());
+            return String.valueOf(getValue());
         }
     }
 
@@ -59,10 +57,8 @@ public abstract class Terminal<T> extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
-            return new Argument.VectorArgument(this.getValue()).toImage(width,
-                    height);
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
+            return new Argument.VectorArgument(getValue()).toImage(width, height);
         }
 
         @Override
@@ -72,8 +68,7 @@ public abstract class Terminal<T> extends Expression {
 
         @Override
         public String toString() {
-            return String.format("#%f,%f,%f", this.getValue().get(0),
-                    this.getValue().get(1), this.getValue().get(2));
+            return String.format("#%f,%f,%f", getValue().get(0), getValue().get(1), getValue().get(2));
         }
     }
 
@@ -84,10 +79,8 @@ public abstract class Terminal<T> extends Expression {
         }
 
         @Override
-        public Image interpret(final int width, final int height,
-                final List<Argument<?>> arguments) {
-            return new Argument.VariableArgument(this.getValue()).toImage(width,
-                    height);
+        public Image interpret(final int width, final int height, final List<Argument<?>> arguments) {
+            return new Argument.VariableArgument(getValue()).toImage(width, height);
         }
 
         @Override
@@ -97,7 +90,7 @@ public abstract class Terminal<T> extends Expression {
 
         @Override
         public String toString() {
-            return this.getValue().name();
+            return getValue().name();
         }
     }
 }

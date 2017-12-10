@@ -10,8 +10,7 @@ import com.github.adinsa.picevolve.mutation.Mutation;
 import com.github.adinsa.picevolve.mutation.MutationFactory;
 
 /**
- * Wraps all non-deterministic behavior involved in performing genetic
- * operations on {@link Expression} trees.
+ * Wraps all non-deterministic behavior involved in performing genetic operations on {@link Expression} trees.
  *
  * @author amar
  *
@@ -19,16 +18,14 @@ import com.github.adinsa.picevolve.mutation.MutationFactory;
 public interface Random {
 
     /**
-     * Returns a randomly-generated {@link ScalarNode} with a value between 0
-     * and 1.
+     * Returns a randomly-generated {@link ScalarNode} with a value between 0 and 1.
      *
      * @return
      */
     public ScalarNode nextScalar();
 
     /**
-     * Returns a randomly-generated {@link VectorNode} with element values
-     * between 0 and 1.
+     * Returns a randomly-generated {@link VectorNode} with element values between 0 and 1.
      *
      * @return
      */
@@ -64,8 +61,7 @@ public interface Random {
     public Expression nextNode(final Expression root);
 
     /**
-     * Returns a random node from the provided {@link Expression} node's
-     * immediate children.
+     * Returns a random node from the provided {@link Expression} node's immediate children.
      *
      * @param node
      * @return
@@ -73,9 +69,8 @@ public interface Random {
     public Expression nextChild(final Expression node);
 
     /**
-     * Returns a random {@link Mutation} that may be applied to the given type
-     * of {@link Expression} node (based on the types and relative frequencies
-     * defined in {@link MutationFactory}).
+     * Returns a random {@link Mutation} that may be applied to the given type of {@link Expression} node (based on the
+     * types and relative frequencies defined in {@link MutationFactory}).
      *
      * @param nodeType
      * @return
@@ -83,13 +78,11 @@ public interface Random {
     public Mutation nextMutation(final Class<? extends Expression> nodeType);
 
     /**
-     * Should a mutation be performed while visiting the given
-     * {@link Expression} node?
+     * Should a mutation be performed while visiting the given {@link Expression} node?
      *
      * @param node
      * @param globalMutationFrequency
      * @return
      */
-    public boolean shouldMutate(final Expression node,
-            final double globalMutationFrequency);
+    public boolean shouldMutate(final Expression node, final double globalMutationFrequency);
 }

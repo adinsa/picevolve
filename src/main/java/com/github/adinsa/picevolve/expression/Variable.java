@@ -11,12 +11,9 @@ import java.util.Optional;
  */
 public enum Variable {
 
-    X,
-    Y;
+    X, Y;
 
     public static Optional<Variable> fromString(final String token) {
-        return Arrays.stream(Variable.values())
-                .filter(var -> var.toString().equalsIgnoreCase(token))
-                .findAny();
+        return Arrays.stream(Variable.values()).filter(var -> var.toString().equalsIgnoreCase(token)).findAny();
     }
 }

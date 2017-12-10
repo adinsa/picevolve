@@ -20,8 +20,7 @@ import com.github.adinsa.picevolve.expression.Expression;
 import com.github.adinsa.picevolve.visitor.EvaluatorVisitor;
 
 /**
- * Simple command line interface providing ability to save/load/delete image
- * expressions to a text file.
+ * Simple command line interface providing ability to save/load/delete image expressions to a text file.
  *
  * @author amar
  *
@@ -42,16 +41,15 @@ public class App {
     private final ExecutorService executor;
 
     public App() {
-        this.population = new ArrayList<Expression>();
-        this.picEvolve = new PicEvolve();
+        population = new ArrayList<>();
+        picEvolve = new PicEvolve();
 
         final int numProcessors = Runtime.getRuntime().availableProcessors();
         logger.debug("availableProcessors: {}", numProcessors);
-        this.executor = Executors.newFixedThreadPool(numProcessors);
+        executor = Executors.newFixedThreadPool(numProcessors);
     }
 
-    public static void main(final String[] args)
-            throws IOException, InterruptedException {
+    public static void main(final String[] args) throws IOException, InterruptedException {
 
         final App app = new App();
         new CommandRunner(app).mainLoop(System.in, System.out);
@@ -61,77 +59,62 @@ public class App {
         app.executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
     }
 
-    @Command(description = "Initialize a population of random images", prompts = {
-            "Enter population size: " })
+    @Command(description = "Initialize a population of random images", prompts = { "Enter population size: " })
     public void init(final int populationSize) throws IOException {
 
-        this.population = this.picEvolve.initializePopulation(populationSize);
-        this.generateImages(this.population);
+        population = picEvolve.initializePopulation(populationSize);
+        generateImages(population);
     }
 
-    @Command(description = "Generate mutations of a parent image", prompts = {
-            "Enter parent #: ", "Enter population size: " })
-    public void mutate(final int parentId, final int populationSize)
-            throws IOException {
-
-        this.population = this.picEvolve.mutate(this.getExpression(parentId),
-                populationSize);
-        this.generateImages(this.population);
-    }
-
-    @Command(description = "Perform crossover between two parent images", prompts = {
-            "Enter first parent #: ", "Enter second parent #: ",
+    @Command(description = "Generate mutations of a parent image", prompts = { "Enter parent #: ",
             "Enter population size: " })
-    public void crossover(final int momId, final int dadId,
-            final int populationSize) throws IOException {
+    public void mutate(final int parentId, final int populationSize) throws IOException {
 
-        this.population = this.picEvolve.crossover(this.getExpression(momId),
-                this.getExpression(dadId), populationSize);
-        this.generateImages(this.population);
+        population = picEvolve.mutate(getExpression(parentId), populationSize);
+        generateImages(population);
     }
 
-    @Command(description = "Generate higher resolution version of an image", prompts = {
-            "Enter image #: ", "Enter width: ", "Enter height: ",
-            "Enter filename: " })
-    public void generate(final int expressionId, final int width,
-            final int height, final String filename) {
+    @Command(description = "Perform crossover between two parent images", prompts = { "Enter first parent #: ",
+            "Enter second parent #: ", "Enter population size: " })
+    public void crossover(final int momId, final int dadId, final int populationSize) throws IOException {
 
-        this.executor.submit(new EvaluationTask(new File(filename),
-                this.getExpression(expressionId), width, height));
+        population = picEvolve.crossover(getExpression(momId), getExpression(dadId), populationSize);
+        generateImages(population);
+    }
+
+    @Command(description = "Generate higher resolution version of an image", prompts = { "Enter image #: ",
+            "Enter width: ", "Enter height: ", "Enter filename: " })
+    public void generate(final int expressionId, final int width, final int height, final String filename) {
+
+        executor.submit(new EvaluationTask(new File(filename), getExpression(expressionId), width, height));
     }
 
     @Command(description = "Load saved image expressions")
     public void load() throws IOException {
 
-        final File libraryFile = this.getLibraryFile();
-        this.population = new ArrayList<>();
+        final File libraryFile = getLibraryFile();
+        population = new ArrayList<>();
         try (FileReader reader = new FileReader(libraryFile)) {
-            this.population = Files.readAllLines(libraryFile.toPath()).stream()
-                    .map(exprStr -> this.picEvolve.parse(exprStr))
+            population = Files.readAllLines(libraryFile.toPath()).stream().map(exprStr -> picEvolve.parse(exprStr))
                     .collect(Collectors.toList());
         }
-        this.generateImages(this.population);
+        generateImages(population);
     }
 
-    @Command(description = "Save an image expression", prompts = {
-            "Enter image #: " })
+    @Command(description = "Save an image expression", prompts = { "Enter image #: " })
     public void save(final int expressionId) throws IOException {
 
-        try (FileWriter writer = new FileWriter(this.getLibraryFile(), true);) {
-            writer.append(this.getExpression(expressionId).toString())
-                    .append('\n');
+        try (FileWriter writer = new FileWriter(getLibraryFile(), true);) {
+            writer.append(getExpression(expressionId).toString()).append('\n');
         }
     }
 
-    @Command(description = "Delete saved image expression", prompts = {
-            "Enter image #: " })
+    @Command(description = "Delete saved image expression", prompts = { "Enter image #: " })
     public void delete(final int expressionId) throws IOException {
 
-        final File libraryFile = this.getLibraryFile();
-        final List<String> lines = Files.readAllLines(libraryFile.toPath())
-                .stream()
-                .filter(line -> !line.trim()
-                        .equals(this.getExpression(expressionId).toString()))
+        final File libraryFile = getLibraryFile();
+        final List<String> lines = Files.readAllLines(libraryFile.toPath()).stream()
+                .filter(line -> !line.trim().equals(getExpression(expressionId).toString()))
                 .collect(Collectors.toList());
 
         try (FileWriter writer = new FileWriter(libraryFile, false)) {
@@ -141,8 +124,7 @@ public class App {
         }
     }
 
-    static class ExpressionIndexOutOfBoundsException
-            extends IndexOutOfBoundsException {
+    static class ExpressionIndexOutOfBoundsException extends IndexOutOfBoundsException {
 
         private static final long serialVersionUID = -2161367907524405709L;
 
@@ -152,12 +134,11 @@ public class App {
     }
 
     private Expression getExpression(final int expressionIdx) {
-        if (expressionIdx < 0 || expressionIdx >= this.population.size()) {
+        if (expressionIdx < 0 || expressionIdx >= population.size()) {
             throw new ExpressionIndexOutOfBoundsException(
-                    String.format("Invalid expression #. Index: %d, Size: %d",
-                            expressionIdx, this.population.size()));
+                    String.format("Invalid expression #. Index: %d, Size: %d", expressionIdx, population.size()));
         }
-        return this.population.get(expressionIdx);
+        return population.get(expressionIdx);
     }
 
     private File getLibraryFile() throws IOException {
@@ -176,13 +157,11 @@ public class App {
         return imageDir;
     }
 
-    private void generateImages(final List<Expression> population)
-            throws IOException {
+    private void generateImages(final List<Expression> population) throws IOException {
 
         for (int i = 0; i < population.size(); i++) {
             System.out.println(i + ": " + population.get(i));
-            this.executor.submit(new EvaluationTask(
-                    new File(this.getImagesDirectory(), i + "." + IMAGE_FORMAT),
+            executor.submit(new EvaluationTask(new File(getImagesDirectory(), i + "." + IMAGE_FORMAT),
                     population.get(i), PREVIEW_WIDTH, PREVIEW_HEIGHT));
         }
     }
@@ -193,9 +172,8 @@ public class App {
         private final Expression expression;
         private final File file;
 
-        public EvaluationTask(final File file, final Expression expression,
-                final int width, final int height) {
-            this.evaluator = new EvaluatorVisitor(width, height);
+        public EvaluationTask(final File file, final Expression expression, final int width, final int height) {
+            evaluator = new EvaluatorVisitor(width, height);
             this.expression = expression;
             this.file = file;
         }
@@ -203,9 +181,8 @@ public class App {
         @Override
         public void run() {
             try {
-                this.expression.accept(this.evaluator);
-                this.evaluator.getImage().scaled().write(this.file,
-                        IMAGE_FORMAT);
+                expression.accept(evaluator);
+                evaluator.getImage().scaled().write(file, IMAGE_FORMAT);
             } catch (final Throwable t) {
                 logger.error("Error:", t);
                 throw t;

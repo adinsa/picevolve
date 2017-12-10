@@ -35,25 +35,22 @@ public class MutationVisitorTest {
 
     @Before
     public void setup() {
-        this.picEvolve = new PicEvolve();
-        this.random = mock(Random.class);
+        picEvolve = new PicEvolve();
+        random = mock(Random.class);
     }
 
     @Test
     public void testScalarToRandomExpressionMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(ScalarNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(ScalarNode.class));
 
-        when(this.random.nextExpression())
-                .thenReturn(this.picEvolve.parse("(+ 1.0 2.0)"));
+        when(random.nextExpression()).thenReturn(picEvolve.parse("(+ 1.0 2.0)"));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.RandomExpressionMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -63,17 +60,15 @@ public class MutationVisitorTest {
     @Test
     public void testAdjustScalarMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(ScalarNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(ScalarNode.class));
 
-        when(this.random.nextScalar()).thenReturn(new ScalarNode(0.1));
+        when(random.nextScalar()).thenReturn(new ScalarNode(0.1));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.AdjustScalarMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.AdjustScalarMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -83,20 +78,17 @@ public class MutationVisitorTest {
     @Test
     public void testScalarBecomeArgumentMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(ScalarNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(ScalarNode.class));
 
-        when(this.random.nextFunction()).thenReturn(new Function.Noise());
-        when(this.random.nextTerminal())
-                .thenReturn(new Terminal.ScalarNode(0.1))
+        when(random.nextFunction()).thenReturn(new Function.Noise());
+        when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1))
                 .thenReturn(new Terminal.VariableNode(Variable.X));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.BecomeArgumentMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -106,18 +98,15 @@ public class MutationVisitorTest {
     @Test
     public void testScalarBecomeNodeCopyMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(ScalarNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(ScalarNode.class));
 
-        when(this.random.nextNode(any())).thenReturn(
-                this.picEvolve.parse(expr.getChildren().get(0).toString()));
+        when(random.nextNode(any())).thenReturn(picEvolve.parse(expr.getChildren().get(0).toString()));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.BecomeNodeCopyMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -127,19 +116,15 @@ public class MutationVisitorTest {
     @Test
     public void testVectorToRandomExpressionMutation() {
 
-        final Expression expr = this.picEvolve
-                .parse("(abs (- X #0.123456,0.678101,0.121315))");
+        final Expression expr = picEvolve.parse("(abs (- X #0.123456,0.678101,0.121315))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(VectorNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(VectorNode.class));
 
-        when(this.random.nextExpression())
-                .thenReturn(this.picEvolve.parse("(+ 0.1 0.2)"));
+        when(random.nextExpression()).thenReturn(picEvolve.parse("(+ 0.1 0.2)"));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.RandomExpressionMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -149,88 +134,70 @@ public class MutationVisitorTest {
     @Test
     public void testAdjustVectorMutation() {
 
-        final Expression expr = this.picEvolve
-                .parse("(abs (- X #0.123456,0.678101,0.121315))");
+        final Expression expr = picEvolve.parse("(abs (- X #0.123456,0.678101,0.121315))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(VectorNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(VectorNode.class));
 
-        when(this.random.nextVector()).thenReturn(
-                new VectorNode(new ArrayList<>(Arrays.asList(0.1, 0.2, 0.3))));
+        when(random.nextVector()).thenReturn(new VectorNode(new ArrayList<>(Arrays.asList(0.1, 0.2, 0.3))));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.AdjustVectorMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.AdjustVectorMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
-        assertEquals("(abs (- X #0.100000,0.200000,0.300000))",
-                expr.toString());
+        assertEquals("(abs (- X #0.100000,0.200000,0.300000))", expr.toString());
     }
 
     @Test
     public void testVectorBecomeArgumentMutation() {
 
-        final Expression expr = this.picEvolve
-                .parse("(abs (- X #0.123456,0.678101,0.121315))");
+        final Expression expr = picEvolve.parse("(abs (- X #0.123456,0.678101,0.121315))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(VectorNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(VectorNode.class));
 
-        when(this.random.nextFunction()).thenReturn(new Function.Plus());
-        when(this.random.nextTerminal())
-                .thenReturn(new Terminal.ScalarNode(0.1));
+        when(random.nextFunction()).thenReturn(new Function.Plus());
+        when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.BecomeArgumentMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
-        assertEquals("(abs (- X (+ #0.123456,0.678101,0.121315 0.1)))",
-                expr.toString());
+        assertEquals("(abs (- X (+ #0.123456,0.678101,0.121315 0.1)))", expr.toString());
     }
 
     @Test
     public void testVectorBecomeNodeCopyMutation() {
 
-        final Expression expr = this.picEvolve
-                .parse("(abs (- X #0.123456,0.678101,0.121315))");
+        final Expression expr = picEvolve.parse("(abs (- X #0.123456,0.678101,0.121315))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(VectorNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(VectorNode.class));
 
-        when(this.random.nextNode(any())).thenReturn(
-                this.picEvolve.parse(expr.getChildren().get(0).toString()));
+        when(random.nextNode(any())).thenReturn(picEvolve.parse(expr.getChildren().get(0).toString()));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.BecomeNodeCopyMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
-        assertEquals("(abs (- X (- X #0.123456,0.678101,0.121315)))",
-                expr.toString());
+        assertEquals("(abs (- X (- X #0.123456,0.678101,0.121315)))", expr.toString());
     }
 
     @Test
     public void testVariableToRandomExpressionMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(VariableNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(VariableNode.class));
 
-        when(this.random.nextExpression())
-                .thenReturn(this.picEvolve.parse("(+ 1.0 2.0)"));
+        when(random.nextExpression()).thenReturn(picEvolve.parse("(+ 1.0 2.0)"));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.RandomExpressionMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -240,19 +207,16 @@ public class MutationVisitorTest {
     @Test
     public void testVariableBecomeArgumentMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(VariableNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(VariableNode.class));
 
-        when(this.random.nextFunction()).thenReturn(new Function.Plus());
-        when(this.random.nextTerminal())
-                .thenReturn(new Terminal.ScalarNode(0.1));
+        when(random.nextFunction()).thenReturn(new Function.Plus());
+        when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.BecomeArgumentMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -262,18 +226,15 @@ public class MutationVisitorTest {
     @Test
     public void testVariableBecomeNodeCopyMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(VariableNode.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(VariableNode.class));
 
-        when(this.random.nextNode(any())).thenReturn(
-                this.picEvolve.parse(expr.getChildren().get(0).toString()));
+        when(random.nextNode(any())).thenReturn(picEvolve.parse(expr.getChildren().get(0).toString()));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.BecomeNodeCopyMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -283,18 +244,15 @@ public class MutationVisitorTest {
     @Test
     public void testFunctionToRandomExpressionMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(Minus.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(Minus.class));
 
-        when(this.random.nextExpression())
-                .thenReturn(this.picEvolve.parse("(+ 1.0 2.0)"));
+        when(random.nextExpression()).thenReturn(picEvolve.parse("(+ 1.0 2.0)"));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.RandomExpressionMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -304,42 +262,35 @@ public class MutationVisitorTest {
     @Test
     public void testFunctionChangeFunctionMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(Minus.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(Minus.class));
 
-        when(this.random.nextFunction()).thenReturn(new Noise());
-        when(this.random.nextTerminal()).thenReturn(
-                new VectorNode(new ArrayList<>(Arrays.asList(0.1, 0.2, 0.3))));
+        when(random.nextFunction()).thenReturn(new Noise());
+        when(random.nextTerminal()).thenReturn(new VectorNode(new ArrayList<>(Arrays.asList(0.1, 0.2, 0.3))));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.ChangeFunctionMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.ChangeFunctionMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
-        assertEquals("(abs (noise X 0.3 #0.100000,0.200000,0.300000))",
-                expr.toString());
+        assertEquals("(abs (noise X 0.3 #0.100000,0.200000,0.300000))", expr.toString());
     }
 
     @Test
     public void testFunctionReplaceWithArgumentMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(Minus.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(Minus.class));
 
         final Expression minusNode = expr.getChildren().get(0);
-        when(this.random.nextChild(any()))
-                .thenReturn(minusNode.getChildren().get(1));
+        when(random.nextChild(any())).thenReturn(minusNode.getChildren().get(1));
 
-        when(this.random.nextMutation(any())).thenReturn(
-                new Mutation.ReplaceWithArgumentMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.ReplaceWithArgumentMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -349,19 +300,16 @@ public class MutationVisitorTest {
     @Test
     public void testFunctionBecomeArgumentMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(Minus.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(Minus.class));
 
-        when(this.random.nextFunction()).thenReturn(new Plus());
-        when(this.random.nextTerminal())
-                .thenReturn(new Terminal.ScalarNode(0.1));
+        when(random.nextFunction()).thenReturn(new Plus());
+        when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.BecomeArgumentMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -371,18 +319,15 @@ public class MutationVisitorTest {
     @Test
     public void testFunctionBecomeNodeCopyMutation() {
 
-        final Expression expr = this.picEvolve.parse("(abs (- X 0.3))");
+        final Expression expr = picEvolve.parse("(abs (- X 0.3))");
 
-        when(this.random.shouldMutate(any(), anyDouble()))
-                .then(new ShouldMutateAnswer(Minus.class));
+        when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(Minus.class));
 
-        when(this.random.nextNode(any()))
-                .thenReturn(this.picEvolve.parse(expr.toString()));
+        when(random.nextNode(any())).thenReturn(picEvolve.parse(expr.toString()));
 
-        when(this.random.nextMutation(any()))
-                .thenReturn(new Mutation.BecomeNodeCopyMutation(this.random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random));
 
-        final MutationVisitor visitor = new MutationVisitor(this.random);
+        final MutationVisitor visitor = new MutationVisitor(random);
 
         expr.accept(visitor);
 
@@ -390,9 +335,8 @@ public class MutationVisitorTest {
     }
 
     /**
-     * An {@link Answer} to {@link Random#shouldMutate(Expression, double)} that
-     * returns true when the specified type of {@link Expression} node is
-     * provided
+     * An {@link Answer} to {@link Random#shouldMutate(Expression, double)} that returns true when the specified type of
+     * {@link Expression} node is provided
      */
     private static class ShouldMutateAnswer implements Answer<Boolean> {
 
@@ -403,9 +347,8 @@ public class MutationVisitorTest {
         }
 
         @Override
-        public Boolean answer(final InvocationOnMock invocation)
-                throws Throwable {
-            if (invocation.getArguments()[0].getClass().equals(this.nodeType)) {
+        public Boolean answer(final InvocationOnMock invocation) throws Throwable {
+            if (invocation.getArguments()[0].getClass().equals(nodeType)) {
                 return true;
             }
             return false;
