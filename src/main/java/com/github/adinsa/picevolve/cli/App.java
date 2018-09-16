@@ -61,24 +61,23 @@ public class App {
         generateImages(population);
     }
 
-    @Command(description = "Generate mutations of a parent image", prompts = { "Enter parent #: ",
-            "Enter population size: " })
+    @Command(description = "Generate mutations of a parent image", prompts = { "Enter parent #: ", "Enter population size: " })
     public void mutate(final int parentId, final int populationSize) throws IOException {
 
         population = picEvolve.mutate(getExpression(parentId), populationSize);
         generateImages(population);
     }
 
-    @Command(description = "Perform crossover between two parent images", prompts = { "Enter first parent #: ",
-            "Enter second parent #: ", "Enter population size: " })
+    @Command(description = "Perform crossover between two parent images", prompts = { "Enter first parent #: ", "Enter second parent #: ",
+            "Enter population size: " })
     public void crossover(final int momId, final int dadId, final int populationSize) throws IOException {
 
         population = picEvolve.crossover(getExpression(momId), getExpression(dadId), populationSize);
         generateImages(population);
     }
 
-    @Command(description = "Generate higher resolution version of an image", prompts = { "Enter image #: ",
-            "Enter width: ", "Enter height: ", "Enter filename: " })
+    @Command(description = "Generate higher resolution version of an image", prompts = { "Enter image #: ", "Enter width: ", "Enter height: ",
+            "Enter filename: " })
     public void generate(final int expressionId, final int width, final int height, final String filename) {
 
         executor.submit(new EvaluationTask(new File(filename), getExpression(expressionId), width, height));
@@ -90,8 +89,7 @@ public class App {
         final File libraryFile = getLibraryFile();
         population = new ArrayList<>();
         try (FileReader reader = new FileReader(libraryFile)) {
-            population = Files.readAllLines(libraryFile.toPath()).stream().map(exprStr -> picEvolve.parse(exprStr))
-                    .collect(Collectors.toList());
+            population = Files.readAllLines(libraryFile.toPath()).stream().map(exprStr -> picEvolve.parse(exprStr)).collect(Collectors.toList());
         }
         generateImages(population);
     }
@@ -109,8 +107,7 @@ public class App {
 
         final File libraryFile = getLibraryFile();
         final List<String> lines = Files.readAllLines(libraryFile.toPath()).stream()
-                .filter(line -> !line.trim().equals(getExpression(expressionId).toString()))
-                .collect(Collectors.toList());
+                .filter(line -> !line.trim().equals(getExpression(expressionId).toString())).collect(Collectors.toList());
 
         try (FileWriter writer = new FileWriter(libraryFile, false)) {
             for (final String line : lines) {
@@ -156,8 +153,8 @@ public class App {
 
         for (int i = 0; i < population.size(); i++) {
             logger.info("{}: {}", i, population.get(i));
-            executor.submit(new EvaluationTask(new File(getImagesDirectory(), i + "." + configuration.getImageFormat()),
-                    population.get(i), configuration.getPreviewWidth(), configuration.getPreviewHeight()));
+            executor.submit(new EvaluationTask(new File(getImagesDirectory(), i + "." + configuration.getImageFormat()), population.get(i),
+                    configuration.getPreviewWidth(), configuration.getPreviewHeight()));
         }
     }
 

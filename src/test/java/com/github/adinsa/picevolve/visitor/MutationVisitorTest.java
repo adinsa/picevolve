@@ -83,8 +83,7 @@ public class MutationVisitorTest {
         when(random.shouldMutate(any(), anyDouble())).then(new ShouldMutateAnswer(ScalarNode.class));
 
         when(random.nextFunction()).thenReturn(new Function.Noise());
-        when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1))
-                .thenReturn(new Terminal.VariableNode(Variable.X));
+        when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1)).thenReturn(new Terminal.VariableNode(Variable.X));
 
         when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random));
 
@@ -335,8 +334,8 @@ public class MutationVisitorTest {
     }
 
     /**
-     * An {@link Answer} to {@link Random#shouldMutate(Expression, double)} that returns true when the specified type of
-     * {@link Expression} node is provided
+     * An {@link Answer} to {@link Random#shouldMutate(Expression, double)} that returns true when the specified type of {@link Expression} node is
+     * provided
      */
     private static class ShouldMutateAnswer implements Answer<Boolean> {
 

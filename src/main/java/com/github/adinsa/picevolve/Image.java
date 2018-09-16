@@ -72,10 +72,8 @@ public class Image {
         final Function<Double, Double> scaleFunc = component -> oldMax - oldMin == 0 ? minimum
                 : (component - oldMin) * (maximum - minimum) / (oldMax - oldMin) + minimum;
 
-        IntStream.range(0, height)
-                .forEach(y -> IntStream.range(0, width)
-                        .forEach(x -> scaledImage.set(x, y, get(x, y).r(scaleFunc.apply(get(x, y).r()))
-                                .g(scaleFunc.apply(get(x, y).g())).b(scaleFunc.apply(get(x, y).b())))));
+        IntStream.range(0, height).forEach(y -> IntStream.range(0, width).forEach(x -> scaledImage.set(x, y,
+                get(x, y).r(scaleFunc.apply(get(x, y).r())).g(scaleFunc.apply(get(x, y).g())).b(scaleFunc.apply(get(x, y).b())))));
 
         return scaledImage;
     }
@@ -144,8 +142,8 @@ public class Image {
     }
 
     private DoubleStream asDoubleStream() {
-        return Arrays.stream(pixels).flatMap(row -> Arrays.stream(row))
-                .flatMap(pixel -> Stream.of(pixel.r(), pixel.g(), pixel.b())).mapToDouble(d -> d);
+        return Arrays.stream(pixels).flatMap(row -> Arrays.stream(row)).flatMap(pixel -> Stream.of(pixel.r(), pixel.g(), pixel.b()))
+                .mapToDouble(d -> d);
     }
 
     @Override

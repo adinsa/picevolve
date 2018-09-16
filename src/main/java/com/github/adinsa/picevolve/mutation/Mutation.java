@@ -48,8 +48,7 @@ public abstract class Mutation {
         @Override
         public void mutate(final Expression node) {
             final List<Expression> newChildren = node.getParent().getChildren();
-            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == node).findAny().get()),
-                    random.nextExpression());
+            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == node).findAny().get()), random.nextExpression());
             node.getParent().setChildren(newChildren);
         }
     }
@@ -66,8 +65,7 @@ public abstract class Mutation {
 
         @Override
         public void mutate(final Expression node) {
-            final Terminal.ScalarNode scalarNode = (Terminal.ScalarNode) nodeType.asSubclass(Expression.class)
-                    .cast(node);
+            final Terminal.ScalarNode scalarNode = (Terminal.ScalarNode) nodeType.asSubclass(Expression.class).cast(node);
             final Terminal.ScalarNode randomScalar = random.nextScalar();
             scalarNode.setValue(randomScalar.getValue());
         }
@@ -85,8 +83,7 @@ public abstract class Mutation {
 
         @Override
         public void mutate(final Expression node) {
-            final Terminal.VectorNode vectorNode = (Terminal.VectorNode) nodeType.asSubclass(Expression.class)
-                    .cast(node);
+            final Terminal.VectorNode vectorNode = (Terminal.VectorNode) nodeType.asSubclass(Expression.class).cast(node);
             final VectorNode randomVector = random.nextVector();
             vectorNode.setValue(randomVector.getValue());
         }
@@ -114,15 +111,13 @@ public abstract class Mutation {
             }
 
             final List<Expression> newChildren = node.getParent().getChildren();
-            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == node).findAny().get()),
-                    randomFunc);
+            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == node).findAny().get()), randomFunc);
             randomFunc.setChildren(children);
         }
     }
 
     /**
-     * Change a function node into a different type of function node (generating new random terminal arguments if
-     * necessary).
+     * Change a function node into a different type of function node (generating new random terminal arguments if necessary).
      *
      */
     public static class ChangeFunctionMutation extends Mutation {
@@ -150,9 +145,7 @@ public abstract class Mutation {
             }
 
             final List<Expression> newChildren = functionNode.getParent().getChildren();
-            newChildren.set(
-                    newChildren.indexOf(newChildren.stream().filter(child -> child == functionNode).findAny().get()),
-                    randomFunc);
+            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == functionNode).findAny().get()), randomFunc);
             randomFunc.setChildren(children);
         }
     }
@@ -173,8 +166,7 @@ public abstract class Mutation {
             final Function functionNode = (Function) nodeType.asSubclass(Expression.class).cast(node);
 
             final List<Expression> newChildren = functionNode.getParent().getChildren();
-            newChildren.set(
-                    newChildren.indexOf(newChildren.stream().filter(child -> child == functionNode).findAny().get()),
+            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == functionNode).findAny().get()),
                     random.nextChild(functionNode));
             functionNode.getParent().setChildren(newChildren);
         }

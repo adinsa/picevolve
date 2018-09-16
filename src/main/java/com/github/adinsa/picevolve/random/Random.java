@@ -69,8 +69,8 @@ public interface Random {
     public Expression nextChild(final Expression node);
 
     /**
-     * Returns a random {@link Mutation} that may be applied to the given type of {@link Expression} node (based on the
-     * types and relative frequencies defined in {@link MutationFactory}).
+     * Returns a random {@link Mutation} that may be applied to the given type of {@link Expression} node (based on the types and relative frequencies
+     * defined in {@link MutationFactory}).
      *
      * @param nodeType
      * @return

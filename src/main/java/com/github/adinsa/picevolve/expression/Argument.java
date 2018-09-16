@@ -36,8 +36,7 @@ public abstract class Argument<T> {
         @Override
         public Image toImage(final int width, final int height) {
             final Image image = new Image(width, height);
-            IntStream.range(0, height)
-                    .forEach(y -> IntStream.range(0, width).forEach(x -> image.set(x, y, new Pixel(getValue()))));
+            IntStream.range(0, height).forEach(y -> IntStream.range(0, width).forEach(x -> image.set(x, y, new Pixel(getValue()))));
             return image;
         }
     }
@@ -73,8 +72,8 @@ public abstract class Argument<T> {
         @Override
         public Image toImage(final int width, final int height) {
             final Image image = new Image(width, height);
-            IntStream.range(0, height).forEach(y -> IntStream.range(0, width)
-                    .forEach(x -> image.set(x, y, new Pixel(getValue().get(0), getValue().get(1), getValue().get(2)))));
+            IntStream.range(0, height).forEach(
+                    y -> IntStream.range(0, width).forEach(x -> image.set(x, y, new Pixel(getValue().get(0), getValue().get(1), getValue().get(2)))));
             return image;
         }
     }

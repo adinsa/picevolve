@@ -92,13 +92,13 @@ public class CommandRunner {
             final List<Parameter> params = new ArrayList<>();
             final Command annotation = method.getAnnotation(Command.class);
             if (annotation.prompts().length != method.getParameterCount()) {
-                throw new RuntimeException(String.format("Command method '%s' has %d prompts but %d parameters",
-                        method.toString(), annotation.prompts().length, method.getParameterCount()));
+                throw new RuntimeException(String.format("Command method '%s' has %d prompts but %d parameters", method.toString(),
+                        annotation.prompts().length, method.getParameterCount()));
             }
             for (final Class<?> paramType : method.getParameterTypes()) {
                 if (!parameterTypeMap.containsKey(paramType)) {
-                    throw new RuntimeException(String.format("Unmapped parameter type '%s' for command method '%s'",
-                            paramType.toString(), method.toString()));
+                    throw new RuntimeException(
+                            String.format("Unmapped parameter type '%s' for command method '%s'", paramType.toString(), method.toString()));
                 }
                 params.add(parameterTypeMap.get(paramType));
             }
@@ -111,8 +111,7 @@ public class CommandRunner {
         final PrintStream printStream = new PrintStream(os);
         printStream.println("Enter '?' for help");
 
-        try (final BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                final Scanner scanner = new Scanner(br);) {
+        try (final BufferedReader br = new BufferedReader(new InputStreamReader(is)); final Scanner scanner = new Scanner(br);) {
 
             String line;
             do {
@@ -137,15 +136,14 @@ public class CommandRunner {
     private String getHelp() {
         final StringBuilder sb = new StringBuilder();
         sb.append("\n").append("Commands:").append("\n");
-        commandMethods.entrySet().stream().forEach(entry -> sb
-                .append(String.format("%10s\t%s\n", entry.getKey(), entry.getValue().getCommand().description())));
+        commandMethods.entrySet().stream()
+                .forEach(entry -> sb.append(String.format("%10s\t%s\n", entry.getKey(), entry.getValue().getCommand().description())));
         return sb.toString();
     }
 
     private final List<Method> getCommandMethods() {
         return Arrays.stream(handler.getClass().getMethods())
-                .filter(method -> Arrays.stream(method.getAnnotations())
-                        .anyMatch(annotation -> annotation.annotationType().equals(Command.class)))
+                .filter(method -> Arrays.stream(method.getAnnotations()).anyMatch(annotation -> annotation.annotationType().equals(Command.class)))
                 .collect(Collectors.toList());
     }
 }

@@ -37,8 +37,7 @@ public class RandomImpl implements Random {
 
     @Override
     public VectorNode nextVector() {
-        return new VectorNode(
-                new ArrayList<>(Arrays.asList(random.nextDouble(), random.nextDouble(), random.nextDouble())));
+        return new VectorNode(new ArrayList<>(Arrays.asList(random.nextDouble(), random.nextDouble(), random.nextDouble())));
     }
 
     @Override
@@ -64,8 +63,8 @@ public class RandomImpl implements Random {
     }
 
     /**
-     * Generates a random s-expression. Chooses a random function from the function set and then generates the required
-     * number of arguments, each of which may take one of the following forms:
+     * Generates a random s-expression. Chooses a random function from the function set and then generates the required number of arguments, each of
+     * which may take one of the following forms:
      *
      * <pre>
      * 1.) Random scalar value (between 0.0 and 1.0)
@@ -91,8 +90,7 @@ public class RandomImpl implements Random {
             if (rand >= 0 && rand < 0.25) {
                 sb.append(random.nextDouble());
             } else if (rand >= 0.25 && rand < 0.50) {
-                sb.append("#").append(random.nextDouble()).append(",").append(random.nextDouble()).append(",")
-                        .append(random.nextDouble());
+                sb.append("#").append(random.nextDouble()).append(",").append(random.nextDouble()).append(",").append(random.nextDouble());
             } else if (rand >= 0.50 && rand < 0.75) {
                 sb.append(random.nextDouble() > 0.5 ? Variable.X : Variable.Y);
             } else {

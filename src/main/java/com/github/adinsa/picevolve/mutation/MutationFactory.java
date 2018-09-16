@@ -22,8 +22,8 @@ import com.github.adinsa.picevolve.mutation.Mutation.ReplaceWithArgumentMutation
 import com.github.adinsa.picevolve.random.Random;
 
 /**
- * Defines which {@link Mutation} implementations may be applied to each type of {@link Expression} node and the
- * relative frequencies with which they are to be applied
+ * Defines which {@link Mutation} implementations may be applied to each type of {@link Expression} node and the relative frequencies with which they
+ * are to be applied
  *
  * @author amar
  *
@@ -35,26 +35,21 @@ public class MutationFactory {
     public MutationFactory(final Random random) {
 
         setMutationFrequencies(ScalarNode.class, new MutationFrequency(new RandomExpressionMutation(random)),
-                new MutationFrequency(new AdjustScalarMutation(random)),
-                new MutationFrequency(new BecomeArgumentMutation(random)),
+                new MutationFrequency(new AdjustScalarMutation(random)), new MutationFrequency(new BecomeArgumentMutation(random)),
                 new MutationFrequency(new BecomeNodeCopyMutation(random)));
         setMutationFrequencies(VectorNode.class, new MutationFrequency(new RandomExpressionMutation(random)),
-                new MutationFrequency(new AdjustVectorMutation(random)),
-                new MutationFrequency(new BecomeArgumentMutation(random)),
+                new MutationFrequency(new AdjustVectorMutation(random)), new MutationFrequency(new BecomeArgumentMutation(random)),
                 new MutationFrequency(new BecomeNodeCopyMutation(random)));
         setMutationFrequencies(VariableNode.class, new MutationFrequency(new RandomExpressionMutation(random)),
-                new MutationFrequency(new BecomeArgumentMutation(random)),
-                new MutationFrequency(new BecomeNodeCopyMutation(random)));
+                new MutationFrequency(new BecomeArgumentMutation(random)), new MutationFrequency(new BecomeNodeCopyMutation(random)));
         setMutationFrequencies(Function.class, new MutationFrequency(new RandomExpressionMutation(random)),
-                new MutationFrequency(new ChangeFunctionMutation(random)),
-                new MutationFrequency(new ReplaceWithArgumentMutation(random)),
-                new MutationFrequency(new BecomeArgumentMutation(random)),
-                new MutationFrequency(new BecomeNodeCopyMutation(random)));
+                new MutationFrequency(new ChangeFunctionMutation(random)), new MutationFrequency(new ReplaceWithArgumentMutation(random)),
+                new MutationFrequency(new BecomeArgumentMutation(random)), new MutationFrequency(new BecomeNodeCopyMutation(random)));
     }
 
     /**
-     * Returns {@link Mutation}s that may be applied to the given type of {@link Expression} node paired with the
-     * relative frequencies with which they should be applied.
+     * Returns {@link Mutation}s that may be applied to the given type of {@link Expression} node paired with the relative frequencies with which they
+     * should be applied.
      *
      * @param nodeType
      * @return
@@ -63,8 +58,7 @@ public class MutationFactory {
         return Collections.unmodifiableList(new ArrayList<>(Arrays.asList(mutationFrequencyMap.get(nodeType))));
     }
 
-    private final void setMutationFrequencies(final Class<? extends Expression> nodeType,
-            final MutationFrequency... frequencies) {
+    private final void setMutationFrequencies(final Class<? extends Expression> nodeType, final MutationFrequency... frequencies) {
         mutationFrequencyMap.put(nodeType, frequencies);
     }
 

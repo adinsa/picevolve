@@ -39,6 +39,7 @@ public class PicEvolve {
 
         this.random = random;
 
+        // @formatter:off
         this.addFunctions(new Function[] {
                 new Function.Plus(),
                 new Function.Minus(),
@@ -66,6 +67,7 @@ public class PicEvolve {
                 new Function.Sharpen(),
                 new Function.Emboss()
         });
+        // @formatter:on
     }
 
     private final void addFunctions(final Function... functions) {
@@ -74,8 +76,7 @@ public class PicEvolve {
 
     private final void addFunction(final Function function) {
         if (functionMap.containsKey(function.getName())) {
-            throw new IllegalArgumentException(
-                    String.format("Function with name '%s' already exists", function.getName()));
+            throw new IllegalArgumentException(String.format("Function with name '%s' already exists", function.getName()));
         }
         functionMap.put(function.getName(), function);
     }
@@ -98,8 +99,8 @@ public class PicEvolve {
 
         final Stack<Expression> exprStack = new Stack<>();
 
-        final List<String> tokens = new ArrayList<>(Arrays.asList(
-                expressionString.replace("(", "").replace(")", "").replaceAll("\\s{2,}", " ").trim().split(" ")));
+        final List<String> tokens = new ArrayList<>(
+                Arrays.asList(expressionString.replace("(", "").replace(")", "").replaceAll("\\s{2,}", " ").trim().split(" ")));
 
         Collections.reverse(tokens);
 
@@ -117,8 +118,8 @@ public class PicEvolve {
                 exprStack.push(new Terminal.VariableNode(Variable.fromString(token).get()));
             } else if (token.startsWith("#")) {
                 final String[] vecParts = token.replace("#", "").split(",");
-                exprStack.push(new Terminal.VectorNode(new ArrayList<>(Arrays.asList(Double.valueOf(vecParts[0]),
-                        Double.valueOf(vecParts[1]), Double.valueOf(vecParts[2])))));
+                exprStack.push(new Terminal.VectorNode(
+                        new ArrayList<>(Arrays.asList(Double.valueOf(vecParts[0]), Double.valueOf(vecParts[1]), Double.valueOf(vecParts[2])))));
             } else {
                 try {
                     final double val = Double.valueOf(token);
@@ -195,10 +196,7 @@ public class PicEvolve {
                 momCopy = dadSubtree;
             } else {
                 final List<Expression> newChildren = momSubtree.getParent().getChildren();
-                newChildren.set(
-                        newChildren
-                                .indexOf(newChildren.stream().filter(sibling -> sibling == momSubtree).findAny().get()),
-                        dadSubtree);
+                newChildren.set(newChildren.indexOf(newChildren.stream().filter(sibling -> sibling == momSubtree).findAny().get()), dadSubtree);
                 momSubtree.getParent().setChildren(newChildren);
             }
 
