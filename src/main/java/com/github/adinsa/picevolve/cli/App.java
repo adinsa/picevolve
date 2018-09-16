@@ -29,20 +29,15 @@ public class App {
 
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
-    private static final String IMAGE_DIRECTORY = "images";
-    private static final String IMAGE_FORMAT = "png";
-    private static final String LIBRARY_FILE = ".library.txt";
-
-    private static final int PREVIEW_WIDTH = 200;
-    private static final int PREVIEW_HEIGHT = 200;
-
     private List<Expression> population;
     private final PicEvolve picEvolve;
     private final ExecutorService executor;
+    private final Configuration configuration;
 
-    public App() {
+    public App() throws IOException {
         population = new ArrayList<>();
         picEvolve = new PicEvolve();
+        configuration = new Configuration();
 
         final int numProcessors = Runtime.getRuntime().availableProcessors();
         logger.debug("availableProcessors: {}", numProcessors);
@@ -143,14 +138,14 @@ public class App {
 
     private File getLibraryFile() throws IOException {
 
-        final File file = new File(LIBRARY_FILE);
+        final File file = new File(configuration.getLibraryFile());
         file.createNewFile();
         return file;
     }
 
     private File getImagesDirectory() throws IOException {
 
-        final File imageDir = new File(IMAGE_DIRECTORY);
+        final File imageDir = new File(configuration.getImagesDirectory());
         if (Files.notExists(imageDir.toPath())) {
             Files.createDirectory(imageDir.toPath());
         }
@@ -160,13 +155,13 @@ public class App {
     private void generateImages(final List<Expression> population) throws IOException {
 
         for (int i = 0; i < population.size(); i++) {
-            System.out.println(i + ": " + population.get(i));
-            executor.submit(new EvaluationTask(new File(getImagesDirectory(), i + "." + IMAGE_FORMAT),
-                    population.get(i), PREVIEW_WIDTH, PREVIEW_HEIGHT));
+            logger.info("{}: {}", i, population.get(i));
+            executor.submit(new EvaluationTask(new File(getImagesDirectory(), i + "." + configuration.getImageFormat()),
+                    population.get(i), configuration.getPreviewWidth(), configuration.getPreviewHeight()));
         }
     }
 
-    private static class EvaluationTask implements Runnable {
+    private class EvaluationTask implements Runnable {
 
         private final EvaluatorVisitor evaluator;
         private final Expression expression;
@@ -182,7 +177,7 @@ public class App {
         public void run() {
             try {
                 expression.accept(evaluator);
-                evaluator.getImage().scaled().write(file, IMAGE_FORMAT);
+                evaluator.getImage().scaled().write(file, configuration.getImageFormat());
             } catch (final Throwable t) {
                 logger.error("Error:", t);
                 throw t;

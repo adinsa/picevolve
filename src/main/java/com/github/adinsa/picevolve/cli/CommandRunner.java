@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -115,16 +114,22 @@ public class CommandRunner {
         try (final BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 final Scanner scanner = new Scanner(br);) {
 
-            Optional<String> line = Optional.empty();
+            String line;
             do {
-                printStream.print("--> ");
-                line = Optional.ofNullable(br.readLine());
-                if (commandMethods.containsKey(line.orElse("").trim())) {
-                    commandMethods.get(line.get().trim()).execute(handler, os, scanner);
-                } else if (line.orElse("").trim().equals("?")) {
-                    printStream.println(getHelp());
+                printStream.print("=> ");
+                line = br.readLine();
+                if (line == null) {
+                    break;
                 }
-            } while (line.isPresent());
+                line = line.trim();
+                if (commandMethods.containsKey(line)) {
+                    commandMethods.get(line).execute(handler, os, scanner);
+                } else if (line.equals("?")) {
+                    printStream.println(getHelp());
+                } else if (!line.isEmpty()) {
+                    printStream.println("Unrecognized command");
+                }
+            } while (line != null);
         }
         printStream.println();
     }

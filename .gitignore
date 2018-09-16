@@ -8,6 +8,6 @@ target
 dependency-reduced-pom.xml
 
 # PicEvolve
-.library.txt
+.library.dat
 images
 *.png
