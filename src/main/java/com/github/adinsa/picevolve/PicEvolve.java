@@ -28,6 +28,8 @@ public class PicEvolve {
 
     private static final Logger logger = LoggerFactory.getLogger(PicEvolve.class);
 
+    private static final int MAX_ATTEMPTS_PER_MEMBER = 1000;
+
     private final Map<String, Function> functionMap = new HashMap<>();
     private final Random random;
 
@@ -140,6 +142,8 @@ public class PicEvolve {
      */
     public List<Expression> initializePopulation(final int populationSize) {
 
+        validatePopulationSize(populationSize);
+
         final List<Expression> population = new ArrayList<>();
         IntStream.range(0, populationSize).forEach(i -> population.add(random.nextExpression()));
 
@@ -155,17 +159,21 @@ public class PicEvolve {
      */
     public List<Expression> mutate(final Expression parent, final int populationSize) {
 
+        validatePopulationSize(populationSize);
+
         final List<Expression> nextGeneration = new ArrayList<>();
 
-        do {
-            final Visitor visitor = new MutationVisitor();
+        int attempts = 0;
+        while (nextGeneration.size() < populationSize && attempts < populationSize * MAX_ATTEMPTS_PER_MEMBER) {
+            attempts++;
+            final Visitor visitor = new MutationVisitor(random);
             final Expression mutant = parse(parent.toString());
             mutant.accept(visitor);
 
             if (!mutant.toString().equalsIgnoreCase(parent.toString())) {
                 nextGeneration.add(mutant);
             }
-        } while (nextGeneration.size() != populationSize);
+        }
 
         return nextGeneration;
     }
@@ -180,12 +188,16 @@ public class PicEvolve {
      */
     public List<Expression> crossover(final Expression mom, final Expression dad, final int populationSize) {
 
+        validatePopulationSize(populationSize);
+
         logger.debug("Mom expression: {}", mom.toString());
         logger.debug("Dad expression: {}", dad.toString());
 
         final List<Expression> children = new ArrayList<>();
 
-        do {
+        int attempts = 0;
+        while (children.size() < populationSize && attempts < populationSize * MAX_ATTEMPTS_PER_MEMBER) {
+            attempts++;
             Expression momCopy = parse(mom.toString());
             final Expression dadCopy = parse(dad.toString());
 
@@ -204,9 +216,15 @@ public class PicEvolve {
                 children.add(momCopy);
             }
 
-        } while (children.size() != populationSize);
+        }
 
         return children;
+    }
+
+    private void validatePopulationSize(final int populationSize) {
+        if (populationSize <= 0) {
+            throw new IllegalArgumentException("Population size must be greater than zero: " + populationSize);
+        }
     }
 
     /**
