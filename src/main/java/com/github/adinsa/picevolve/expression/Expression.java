@@ -33,6 +33,20 @@ public abstract class Expression {
         return Optional.ofNullable(children).orElse(new ArrayList<Expression>());
     }
 
+    /**
+     * Replaces this node with the provided node in its parent's list of children.
+     *
+     * @param replacement
+     */
+    public final void replaceWith(final Expression replacement) {
+        if (parent == null) {
+            throw new IllegalStateException("Root node cannot be replaced");
+        }
+        final List<Expression> siblings = parent.getChildren();
+        siblings.set(siblings.indexOf(this), replacement);
+        parent.setChildren(siblings);
+    }
+
     public abstract Image interpret(final int width, final int height, final List<Argument<?>> arguments);
 
     public abstract void accept(Visitor visitor);

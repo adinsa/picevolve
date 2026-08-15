@@ -1,23 +1,13 @@
 package com.github.adinsa.picevolve;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Stack;
 import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.adinsa.picevolve.expression.Expression;
-import com.github.adinsa.picevolve.expression.Function;
-import com.github.adinsa.picevolve.expression.Terminal;
-import com.github.adinsa.picevolve.expression.Variable;
 import com.github.adinsa.picevolve.random.Random;
 import com.github.adinsa.picevolve.random.RandomImpl;
 import com.github.adinsa.picevolve.visitor.EvaluatorVisitor;
@@ -30,65 +20,21 @@ public class PicEvolve {
 
     private static final int MAX_ATTEMPTS_PER_MEMBER = 1000;
 
-    private final Map<String, Function> functionMap = new HashMap<>();
+    private final FunctionSet functions;
     private final Random random;
 
     public PicEvolve() {
-        this(new RandomImpl());
+        functions = FunctionSet.createDefault();
+        random = new RandomImpl(functions);
     }
 
     public PicEvolve(final Random random) {
-
+        functions = FunctionSet.createDefault();
         this.random = random;
-
-        // @formatter:off
-        this.addFunctions(new Function[] {
-                new Function.Plus(),
-                new Function.Minus(),
-                new Function.Multiply(),
-                new Function.Divide(),
-                new Function.Round(),
-                new Function.Expt(),
-                new Function.Log(),
-                new Function.Sine(),
-                new Function.Cosine(),
-                new Function.Tangent(),
-                new Function.Min(),
-                new Function.Max(),
-                new Function.Abs(),
-                new Function.Mod(),
-                new Function.IntAnd(),
-                new Function.IntOr(),
-                new Function.IntXor(),
-                new Function.FloatAnd(),
-                new Function.FloatOr(),
-                new Function.FloatXor(),
-                new Function.Noise(),
-                new Function.WarpedNoise(),
-                new Function.Blur(),
-                new Function.Sharpen(),
-                new Function.Emboss()
-        });
-        // @formatter:on
     }
 
-    private final void addFunctions(final Function... functions) {
-        Arrays.asList(functions).stream().forEach(func -> addFunction(func));
-    }
-
-    private final void addFunction(final Function function) {
-        if (functionMap.containsKey(function.getName())) {
-            throw new IllegalArgumentException(String.format("Function with name '%s' already exists", function.getName()));
-        }
-        functionMap.put(function.getName(), function);
-    }
-
-    public Optional<Function> getFunction(final String name) {
-        return Optional.ofNullable(functionMap.get(name)).map(function -> function.copy());
-    }
-
-    public Set<String> getFunctionNames() {
-        return Collections.unmodifiableSet(functionMap.keySet());
+    public FunctionSet getFunctionSet() {
+        return functions;
     }
 
     /**
@@ -98,78 +44,7 @@ public class PicEvolve {
      * @return
      */
     public Expression parse(final String expressionString) {
-
-        if (expressionString == null || expressionString.trim().isEmpty()) {
-            throw new IllegalArgumentException("Cannot parse empty expression");
-        }
-        validateBalancedParentheses(expressionString);
-
-        final Stack<Expression> exprStack = new Stack<>();
-
-        final List<String> tokens = new ArrayList<>(
-                Arrays.asList(expressionString.replace("(", "").replace(")", "").replaceAll("\\s{2,}", " ").trim().split(" ")));
-
-        Collections.reverse(tokens);
-
-        for (final String token : tokens) {
-            final Optional<Function> function = getFunction(token);
-            if (function.isPresent()) {
-                final Function func = function.get();
-                final List<Expression> children = new ArrayList<>(func.getArity());
-                for (int i = 0; i < func.getArity(); i++) {
-                    if (exprStack.isEmpty()) {
-                        throw new IllegalArgumentException(
-                                String.format("Not enough arguments for function '%s' in: %s", token, expressionString));
-                    }
-                    children.add(exprStack.pop());
-                }
-                func.setChildren(children);
-                exprStack.push(func);
-            } else if (Variable.fromString(token).isPresent()) {
-                exprStack.push(new Terminal.VariableNode(Variable.fromString(token).get()));
-            } else if (token.startsWith("#")) {
-                exprStack.push(new Terminal.VectorNode(parseVector(token)));
-            } else {
-                try {
-                    final double val = Double.valueOf(token);
-                    exprStack.push(new Terminal.ScalarNode(val));
-                } catch (final NumberFormatException e) {
-                    throw new IllegalArgumentException(String.format("Invalid token: '%s'", token));
-                }
-            }
-        }
-
-        if (exprStack.size() != 1) {
-            throw new IllegalArgumentException(
-                    String.format("Expression must have a single root node (found %d): %s", exprStack.size(), expressionString));
-        }
-        return exprStack.pop();
-    }
-
-    private List<Double> parseVector(final String token) {
-        final String[] vecParts = token.replace("#", "").split(",");
-        if (vecParts.length != 3) {
-            throw new IllegalArgumentException(String.format("Vector must have exactly 3 components: '%s'", token));
-        }
-        return new ArrayList<>(
-                Arrays.asList(Double.valueOf(vecParts[0]), Double.valueOf(vecParts[1]), Double.valueOf(vecParts[2])));
-    }
-
-    private void validateBalancedParentheses(final String expression) {
-        int depth = 0;
-        for (final char c : expression.toCharArray()) {
-            if (c == '(') {
-                depth++;
-            } else if (c == ')') {
-                depth--;
-                if (depth < 0) {
-                    throw new IllegalArgumentException("Unbalanced parentheses in: " + expression);
-                }
-            }
-        }
-        if (depth != 0) {
-            throw new IllegalArgumentException("Unbalanced parentheses in: " + expression);
-        }
+        return functions.parse(expressionString);
     }
 
     /**
@@ -245,9 +120,7 @@ public class PicEvolve {
             if (momSubtree.getParent() == null) {
                 momCopy = dadSubtree;
             } else {
-                final List<Expression> newChildren = momSubtree.getParent().getChildren();
-                newChildren.set(newChildren.indexOf(newChildren.stream().filter(sibling -> sibling == momSubtree).findAny().get()), dadSubtree);
-                momSubtree.getParent().setChildren(newChildren);
+                momSubtree.replaceWith(dadSubtree);
             }
 
             if (!momCopy.toString().equalsIgnoreCase(mom.toString())) {

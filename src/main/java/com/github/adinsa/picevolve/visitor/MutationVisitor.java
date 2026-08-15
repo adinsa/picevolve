@@ -3,6 +3,7 @@ package com.github.adinsa.picevolve.visitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.adinsa.picevolve.FunctionSet;
 import com.github.adinsa.picevolve.expression.Expression;
 import com.github.adinsa.picevolve.expression.Function;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
@@ -28,7 +29,7 @@ public class MutationVisitor implements Visitor {
     private final double globalMutationFrequency;
 
     public MutationVisitor() {
-        this(new RandomImpl(), DEFAULT_GLOBAL_MUTATION_FREQUENCY);
+        this(new RandomImpl(FunctionSet.createDefault()), DEFAULT_GLOBAL_MUTATION_FREQUENCY);
     }
 
     public MutationVisitor(final Random random) {
@@ -36,7 +37,7 @@ public class MutationVisitor implements Visitor {
     }
 
     public MutationVisitor(final double globalMutationFrequency) {
-        this(new RandomImpl(), globalMutationFrequency);
+        this(new RandomImpl(FunctionSet.createDefault()), globalMutationFrequency);
     }
 
     public MutationVisitor(final Random random, final double globalMutationFrequency) {

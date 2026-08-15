@@ -48,7 +48,7 @@ public class MutationVisitorTest {
 
         when(random.nextExpression()).thenReturn(picEvolve.parse("(+ 1.0 2.0)"));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -66,7 +66,7 @@ public class MutationVisitorTest {
 
         when(random.nextScalar()).thenReturn(new ScalarNode(0.1));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.AdjustScalarMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.AdjustScalarMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -85,7 +85,7 @@ public class MutationVisitorTest {
         when(random.nextFunction()).thenReturn(new Function.Noise());
         when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1)).thenReturn(new Terminal.VariableNode(Variable.X));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -103,7 +103,7 @@ public class MutationVisitorTest {
 
         when(random.nextNode(any())).thenReturn(picEvolve.parse(expr.getChildren().get(0).toString()));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -121,7 +121,7 @@ public class MutationVisitorTest {
 
         when(random.nextExpression()).thenReturn(picEvolve.parse("(+ 0.1 0.2)"));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -139,7 +139,7 @@ public class MutationVisitorTest {
 
         when(random.nextVector()).thenReturn(new VectorNode(new ArrayList<>(Arrays.asList(0.1, 0.2, 0.3))));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.AdjustVectorMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.AdjustVectorMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -158,7 +158,7 @@ public class MutationVisitorTest {
         when(random.nextFunction()).thenReturn(new Function.Plus());
         when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -176,7 +176,7 @@ public class MutationVisitorTest {
 
         when(random.nextNode(any())).thenReturn(picEvolve.parse(expr.getChildren().get(0).toString()));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -194,7 +194,7 @@ public class MutationVisitorTest {
 
         when(random.nextExpression()).thenReturn(picEvolve.parse("(+ 1.0 2.0)"));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -213,7 +213,7 @@ public class MutationVisitorTest {
         when(random.nextFunction()).thenReturn(new Function.Plus());
         when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -231,7 +231,7 @@ public class MutationVisitorTest {
 
         when(random.nextNode(any())).thenReturn(picEvolve.parse(expr.getChildren().get(0).toString()));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -249,7 +249,7 @@ public class MutationVisitorTest {
 
         when(random.nextExpression()).thenReturn(picEvolve.parse("(+ 1.0 2.0)"));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.RandomExpressionMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -268,7 +268,7 @@ public class MutationVisitorTest {
         when(random.nextFunction()).thenReturn(new Noise());
         when(random.nextTerminal()).thenReturn(new VectorNode(new ArrayList<>(Arrays.asList(0.1, 0.2, 0.3))));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.ChangeFunctionMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.ChangeFunctionMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -287,7 +287,7 @@ public class MutationVisitorTest {
         final Expression minusNode = expr.getChildren().get(0);
         when(random.nextChild(any())).thenReturn(minusNode.getChildren().get(1));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.ReplaceWithArgumentMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.ReplaceWithArgumentMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -306,7 +306,7 @@ public class MutationVisitorTest {
         when(random.nextFunction()).thenReturn(new Plus());
         when(random.nextTerminal()).thenReturn(new Terminal.ScalarNode(0.1));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeArgumentMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 
@@ -324,7 +324,7 @@ public class MutationVisitorTest {
 
         when(random.nextNode(any())).thenReturn(picEvolve.parse(expr.toString()));
 
-        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random));
+        when(random.nextMutation(any())).thenReturn(new Mutation.BecomeNodeCopyMutation(random, picEvolve.getFunctionSet()));
 
         final MutationVisitor visitor = new MutationVisitor(random);
 

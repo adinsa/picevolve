@@ -2,14 +2,12 @@ package com.github.adinsa.picevolve.random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
-import java.util.stream.IntStream;
 
-import com.github.adinsa.picevolve.PicEvolve;
+import com.github.adinsa.picevolve.FunctionSet;
 import com.github.adinsa.picevolve.expression.Expression;
 import com.github.adinsa.picevolve.expression.Function;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
@@ -23,11 +21,11 @@ import com.github.adinsa.picevolve.mutation.MutationFactory.MutationFrequency;
 public class RandomImpl implements Random {
 
     private final java.util.Random random;
-    private final PicEvolve picEvolve;
+    private final FunctionSet functions;
 
-    public RandomImpl() {
+    public RandomImpl(final FunctionSet functions) {
         random = new java.util.Random();
-        picEvolve = new PicEvolve(this);
+        this.functions = functions;
     }
 
     @Override
@@ -56,10 +54,8 @@ public class RandomImpl implements Random {
 
     @Override
     public Function nextFunction() {
-        final Iterator<String> iter = picEvolve.getFunctionNames().iterator();
-        IntStream.range(0, random.nextInt(picEvolve.getFunctionNames().size())).forEach(i -> iter.next());
-
-        return picEvolve.getFunction(iter.next()).get();
+        final List<String> names = new ArrayList<>(functions.names());
+        return functions.get(names.get(random.nextInt(names.size()))).get();
     }
 
     /**
@@ -100,7 +96,7 @@ public class RandomImpl implements Random {
         }
         final String exprStr = sb.toString().trim() + ")";
 
-        return picEvolve.parse(exprStr);
+        return functions.parse(exprStr);
     }
 
     /**
@@ -134,7 +130,7 @@ public class RandomImpl implements Random {
     @Override
     public Mutation nextMutation(final Class<? extends Expression> nodeType) {
 
-        final List<MutationFrequency> freqs = new MutationFactory(this).getMutationFrequencies(nodeType);
+        final List<MutationFrequency> freqs = new MutationFactory(functions, this).getMutationFrequencies(nodeType);
 
         final int totalWeight = freqs.stream().mapToInt(freq -> freq.getRelativeFrequency()).sum();
 
