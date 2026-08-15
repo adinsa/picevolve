@@ -1,15 +1,14 @@
-package com.github.adinsa.picevolve.mutation;
+package com.github.adinsa.picevolve.evolution;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.adinsa.picevolve.FunctionSet;
 import com.github.adinsa.picevolve.expression.Expression;
 import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.ExpressionParser;
 import com.github.adinsa.picevolve.expression.Terminal;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
 import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
-import com.github.adinsa.picevolve.random.Random;
 
 /**
  * Genetic operator used to evolve {@link Expression}s
@@ -20,11 +19,11 @@ import com.github.adinsa.picevolve.random.Random;
 public abstract class Mutation {
 
     protected Random random;
-    protected FunctionSet functions;
+    protected ExpressionParser parser;
 
-    public Mutation(final Random random, final FunctionSet functions) {
+    public Mutation(final Random random, final ExpressionParser parser) {
         this.random = random;
-        this.functions = functions;
+        this.parser = parser;
     }
 
     public abstract void mutate(Expression node);
@@ -34,8 +33,8 @@ public abstract class Mutation {
      */
     public static class RandomExpressionMutation extends Mutation {
 
-        public RandomExpressionMutation(final Random random, final FunctionSet functions) {
-            super(random, functions);
+        public RandomExpressionMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
@@ -50,8 +49,8 @@ public abstract class Mutation {
      */
     public static class AdjustScalarMutation extends Mutation {
 
-        public AdjustScalarMutation(final Random random, final FunctionSet functions) {
-            super(random, functions);
+        public AdjustScalarMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
@@ -67,8 +66,8 @@ public abstract class Mutation {
      */
     public static class AdjustVectorMutation extends Mutation {
 
-        public AdjustVectorMutation(final Random random, final FunctionSet functions) {
-            super(random, functions);
+        public AdjustVectorMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
@@ -84,8 +83,8 @@ public abstract class Mutation {
      */
     public static class BecomeArgumentMutation extends Mutation {
 
-        public BecomeArgumentMutation(final Random random, final FunctionSet functions) {
-            super(random, functions);
+        public BecomeArgumentMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
@@ -110,8 +109,8 @@ public abstract class Mutation {
      */
     public static class ChangeFunctionMutation extends Mutation {
 
-        public ChangeFunctionMutation(final Random random, final FunctionSet functions) {
-            super(random, functions);
+        public ChangeFunctionMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
@@ -143,8 +142,8 @@ public abstract class Mutation {
      */
     public static class ReplaceWithArgumentMutation extends Mutation {
 
-        public ReplaceWithArgumentMutation(final Random random, final FunctionSet functions) {
-            super(random, functions);
+        public ReplaceWithArgumentMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
@@ -159,8 +158,8 @@ public abstract class Mutation {
      */
     public static class BecomeNodeCopyMutation extends Mutation {
 
-        public BecomeNodeCopyMutation(final Random random, final FunctionSet functions) {
-            super(random, functions);
+        public BecomeNodeCopyMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
@@ -169,7 +168,7 @@ public abstract class Mutation {
             while (root.getParent() != null) {
                 root = root.getParent();
             }
-            node.replaceWith(functions.parse(random.nextNode(root).toString()));
+            node.replaceWith(parser.parse(random.nextNode(root).toString()));
         }
     }
 }

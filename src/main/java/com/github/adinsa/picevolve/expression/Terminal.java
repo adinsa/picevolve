@@ -2,8 +2,7 @@ package com.github.adinsa.picevolve.expression;
 
 import java.util.List;
 
-import com.github.adinsa.picevolve.Image;
-import com.github.adinsa.picevolve.visitor.Visitor;
+import com.github.adinsa.picevolve.image.Image;
 
 /**
  * A terminal {@link Expression} node
@@ -40,7 +39,7 @@ public abstract class Terminal<T> extends Expression {
         }
 
         @Override
-        public void accept(final Visitor visitor) {
+        public void accept(final ExpressionVisitor visitor) {
             visitor.visit(this);
         }
 
@@ -62,7 +61,7 @@ public abstract class Terminal<T> extends Expression {
         }
 
         @Override
-        public void accept(final Visitor visitor) {
+        public void accept(final ExpressionVisitor visitor) {
             visitor.visit(this);
         }
 
@@ -84,7 +83,7 @@ public abstract class Terminal<T> extends Expression {
         }
 
         @Override
-        public void accept(final Visitor visitor) {
+        public void accept(final ExpressionVisitor visitor) {
             visitor.visit(this);
         }
 

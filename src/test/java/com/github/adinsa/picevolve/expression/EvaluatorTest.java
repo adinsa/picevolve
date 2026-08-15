@@ -1,26 +1,24 @@
-package com.github.adinsa.picevolve.visitor;
+package com.github.adinsa.picevolve.expression;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.github.adinsa.picevolve.PicEvolve;
+public class EvaluatorTest {
 
-public class EvaluationVisitorTest {
-
-    private PicEvolve picEvolve;
+    private ExpressionParser parser;
 
     @BeforeEach
     public void setup() {
-        picEvolve = new PicEvolve();
+        parser = new ExpressionParser(FunctionSet.createDefault());
     }
 
     @Test
     public void testX() {
 
-        final EvaluatorVisitor evaluator = new EvaluatorVisitor(3, 3);
-        picEvolve.parse("x").accept(evaluator);
+        final Evaluator evaluator = new Evaluator(3, 3);
+        parser.parse("x").accept(evaluator);
 
         // @formatter:off
         assertArrayEquals(new double[] {
@@ -34,8 +32,8 @@ public class EvaluationVisitorTest {
     @Test
     public void testY() {
 
-        final EvaluatorVisitor evaluator = new EvaluatorVisitor(3, 3);
-        picEvolve.parse("y").accept(evaluator);
+        final Evaluator evaluator = new Evaluator(3, 3);
+        parser.parse("y").accept(evaluator);
 
         // @formatter:off
         assertArrayEquals(new double[] {
@@ -49,8 +47,8 @@ public class EvaluationVisitorTest {
     @Test
     public void testExpression() {
 
-        final EvaluatorVisitor evaluator = new EvaluatorVisitor(3, 3);
-        picEvolve.parse("(abs (- x y))").accept(evaluator);
+        final Evaluator evaluator = new Evaluator(3, 3);
+        parser.parse("(abs (- x y))").accept(evaluator);
 
         // @formatter:off
         assertArrayEquals(new double[] {
@@ -64,8 +62,8 @@ public class EvaluationVisitorTest {
     @Test
     public void testNonCommutativeFunctionPreservesArgumentOrder() {
 
-        final EvaluatorVisitor evaluator = new EvaluatorVisitor(3, 3);
-        picEvolve.parse("(- x y)").accept(evaluator);
+        final Evaluator evaluator = new Evaluator(3, 3);
+        parser.parse("(- x y)").accept(evaluator);
 
         // (- x y) must evaluate as x - y, not y - x
         // @formatter:off

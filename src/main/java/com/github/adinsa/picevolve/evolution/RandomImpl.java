@@ -1,29 +1,29 @@
-package com.github.adinsa.picevolve.random;
+package com.github.adinsa.picevolve.evolution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-import com.github.adinsa.picevolve.FunctionSet;
 import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.ExpressionParser;
 import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.FunctionSet;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
 import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
 import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
 import com.github.adinsa.picevolve.expression.Variable;
-import com.github.adinsa.picevolve.mutation.Mutation;
-import com.github.adinsa.picevolve.mutation.MutationFactory;
-import com.github.adinsa.picevolve.mutation.MutationFactory.MutationFrequency;
 
 public class RandomImpl implements Random {
 
     private final java.util.Random random;
     private final FunctionSet functions;
+    private final ExpressionParser parser;
 
     public RandomImpl(final FunctionSet functions) {
         random = new java.util.Random();
         this.functions = functions;
+        parser = new ExpressionParser(functions);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class RandomImpl implements Random {
         }
         final String exprStr = sb.toString().trim() + ")";
 
-        return functions.parse(exprStr);
+        return parser.parse(exprStr);
     }
 
     /**
@@ -128,7 +128,7 @@ public class RandomImpl implements Random {
     @Override
     public Mutation nextMutation(final Class<? extends Expression> nodeType) {
 
-        final List<MutationFrequency> freqs = new MutationFactory(functions, this).getMutationFrequencies(nodeType);
+        final List<MutationFactory.MutationFrequency> freqs = new MutationFactory(parser, this).getMutationFrequencies(nodeType);
 
         final int totalWeight = freqs.stream().mapToInt(freq -> freq.getRelativeFrequency()).sum();
 

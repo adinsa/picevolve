@@ -1,13 +1,11 @@
-package com.github.adinsa.picevolve.random;
+package com.github.adinsa.picevolve.evolution;
 
-import com.github.adinsa.picevolve.PicEvolve;
 import com.github.adinsa.picevolve.expression.Expression;
 import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.FunctionSet;
 import com.github.adinsa.picevolve.expression.Terminal;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
 import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
-import com.github.adinsa.picevolve.mutation.Mutation;
-import com.github.adinsa.picevolve.mutation.MutationFactory;
 
 /**
  * Wraps all non-deterministic behavior involved in performing genetic operations on {@link Expression} trees.
@@ -39,7 +37,7 @@ public interface Random {
     public Expression nextTerminal();
 
     /**
-     * Returns a random {@link Function} from {@link PicEvolve}'s function set.
+     * Returns a random {@link Function} from the {@link FunctionSet}.
      *
      * @return
      */

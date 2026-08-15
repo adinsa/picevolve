@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.github.adinsa.picevolve.Image;
-import com.github.adinsa.picevolve.visitor.Visitor;
+import com.github.adinsa.picevolve.image.Image;
 
 /**
  * Representation of a symbolic expression that serves as the genotype of a PicEvolve image
@@ -63,5 +62,5 @@ public abstract class Expression {
 
     public abstract Image interpret(final int width, final int height, final List<Argument<?>> arguments);
 
-    public abstract void accept(Visitor visitor);
+    public abstract void accept(ExpressionVisitor visitor);
 }

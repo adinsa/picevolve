@@ -1,4 +1,4 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

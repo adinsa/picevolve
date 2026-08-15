@@ -1,4 +1,4 @@
-package com.github.adinsa.picevolve.mutation;
+package com.github.adinsa.picevolve.evolution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,20 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.adinsa.picevolve.FunctionSet;
 import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.ExpressionParser;
 import com.github.adinsa.picevolve.expression.Function;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
 import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
 import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
-import com.github.adinsa.picevolve.mutation.Mutation.AdjustScalarMutation;
-import com.github.adinsa.picevolve.mutation.Mutation.AdjustVectorMutation;
-import com.github.adinsa.picevolve.mutation.Mutation.BecomeArgumentMutation;
-import com.github.adinsa.picevolve.mutation.Mutation.BecomeNodeCopyMutation;
-import com.github.adinsa.picevolve.mutation.Mutation.ChangeFunctionMutation;
-import com.github.adinsa.picevolve.mutation.Mutation.RandomExpressionMutation;
-import com.github.adinsa.picevolve.mutation.Mutation.ReplaceWithArgumentMutation;
-import com.github.adinsa.picevolve.random.Random;
+import com.github.adinsa.picevolve.evolution.Mutation.AdjustScalarMutation;
+import com.github.adinsa.picevolve.evolution.Mutation.AdjustVectorMutation;
+import com.github.adinsa.picevolve.evolution.Mutation.BecomeArgumentMutation;
+import com.github.adinsa.picevolve.evolution.Mutation.BecomeNodeCopyMutation;
+import com.github.adinsa.picevolve.evolution.Mutation.ChangeFunctionMutation;
+import com.github.adinsa.picevolve.evolution.Mutation.RandomExpressionMutation;
+import com.github.adinsa.picevolve.evolution.Mutation.ReplaceWithArgumentMutation;
 
 /**
  * Defines which {@link Mutation} implementations may be applied to each type of {@link Expression} node and the relative frequencies with which they
@@ -33,19 +32,19 @@ public class MutationFactory {
 
     private final Map<Class<? extends Expression>, MutationFrequency[]> mutationFrequencyMap = new HashMap<>();
 
-    public MutationFactory(final FunctionSet functions, final Random random) {
+    public MutationFactory(final ExpressionParser parser, final Random random) {
 
-        setMutationFrequencies(ScalarNode.class, new MutationFrequency(new RandomExpressionMutation(random, functions)),
-                new MutationFrequency(new AdjustScalarMutation(random, functions)), new MutationFrequency(new BecomeArgumentMutation(random, functions)),
-                new MutationFrequency(new BecomeNodeCopyMutation(random, functions)));
-        setMutationFrequencies(VectorNode.class, new MutationFrequency(new RandomExpressionMutation(random, functions)),
-                new MutationFrequency(new AdjustVectorMutation(random, functions)), new MutationFrequency(new BecomeArgumentMutation(random, functions)),
-                new MutationFrequency(new BecomeNodeCopyMutation(random, functions)));
-        setMutationFrequencies(VariableNode.class, new MutationFrequency(new RandomExpressionMutation(random, functions)),
-                new MutationFrequency(new BecomeArgumentMutation(random, functions)), new MutationFrequency(new BecomeNodeCopyMutation(random, functions)));
-        setMutationFrequencies(Function.class, new MutationFrequency(new RandomExpressionMutation(random, functions)),
-                new MutationFrequency(new ChangeFunctionMutation(random, functions)), new MutationFrequency(new ReplaceWithArgumentMutation(random, functions)),
-                new MutationFrequency(new BecomeArgumentMutation(random, functions)), new MutationFrequency(new BecomeNodeCopyMutation(random, functions)));
+        setMutationFrequencies(ScalarNode.class, new MutationFrequency(new RandomExpressionMutation(random, parser)),
+                new MutationFrequency(new AdjustScalarMutation(random, parser)), new MutationFrequency(new BecomeArgumentMutation(random, parser)),
+                new MutationFrequency(new BecomeNodeCopyMutation(random, parser)));
+        setMutationFrequencies(VectorNode.class, new MutationFrequency(new RandomExpressionMutation(random, parser)),
+                new MutationFrequency(new AdjustVectorMutation(random, parser)), new MutationFrequency(new BecomeArgumentMutation(random, parser)),
+                new MutationFrequency(new BecomeNodeCopyMutation(random, parser)));
+        setMutationFrequencies(VariableNode.class, new MutationFrequency(new RandomExpressionMutation(random, parser)),
+                new MutationFrequency(new BecomeArgumentMutation(random, parser)), new MutationFrequency(new BecomeNodeCopyMutation(random, parser)));
+        setMutationFrequencies(Function.class, new MutationFrequency(new RandomExpressionMutation(random, parser)),
+                new MutationFrequency(new ChangeFunctionMutation(random, parser)), new MutationFrequency(new ReplaceWithArgumentMutation(random, parser)),
+                new MutationFrequency(new BecomeArgumentMutation(random, parser)), new MutationFrequency(new BecomeNodeCopyMutation(random, parser)));
     }
 
     /**

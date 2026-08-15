@@ -1,83 +1,24 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.expression;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.Stack;
 
-import com.github.adinsa.picevolve.expression.Expression;
-import com.github.adinsa.picevolve.expression.Function;
-import com.github.adinsa.picevolve.expression.Terminal;
-import com.github.adinsa.picevolve.expression.Variable;
-
 /**
- * Registry of the {@link Function}s available to expressions, together with the parser that builds expression trees from s-expressions.
+ * Parses s-expression strings into {@link Expression} trees using the {@link FunctionSet} to resolve function names.
  *
  * @author amar
  *
  */
-public class FunctionSet {
+public class ExpressionParser {
 
-    private final Map<String, Function> functionMap = new HashMap<>();
+    private final FunctionSet functions;
 
-    public void add(final Function function) {
-        if (functionMap.containsKey(function.getName())) {
-            throw new IllegalArgumentException(String.format("Function with name '%s' already exists", function.getName()));
-        }
-        functionMap.put(function.getName(), function);
-    }
-
-    public Optional<Function> get(final String name) {
-        return Optional.ofNullable(functionMap.get(name)).map(function -> function.copy());
-    }
-
-    public Set<String> names() {
-        return Collections.unmodifiableSet(functionMap.keySet());
-    }
-
-    /**
-     * Returns the default function set used by PicEvolve.
-     *
-     * @return
-     */
-    public static FunctionSet createDefault() {
-
-        final FunctionSet functions = new FunctionSet();
-
-        // @formatter:off
-        functions.add(new Function.Plus());
-        functions.add(new Function.Minus());
-        functions.add(new Function.Multiply());
-        functions.add(new Function.Divide());
-        functions.add(new Function.Round());
-        functions.add(new Function.Expt());
-        functions.add(new Function.Log());
-        functions.add(new Function.Sine());
-        functions.add(new Function.Cosine());
-        functions.add(new Function.Tangent());
-        functions.add(new Function.Min());
-        functions.add(new Function.Max());
-        functions.add(new Function.Abs());
-        functions.add(new Function.Mod());
-        functions.add(new Function.IntAnd());
-        functions.add(new Function.IntOr());
-        functions.add(new Function.IntXor());
-        functions.add(new Function.FloatAnd());
-        functions.add(new Function.FloatOr());
-        functions.add(new Function.FloatXor());
-        functions.add(new Function.Noise());
-        functions.add(new Function.WarpedNoise());
-        functions.add(new Function.Blur());
-        functions.add(new Function.Sharpen());
-        functions.add(new Function.Emboss());
-        // @formatter:on
-
-        return functions;
+    public ExpressionParser(final FunctionSet functions) {
+        this.functions = functions;
     }
 
     /**
@@ -101,7 +42,7 @@ public class FunctionSet {
         Collections.reverse(tokens);
 
         for (final String token : tokens) {
-            final Optional<Function> function = get(token);
+            final Optional<Function> function = functions.get(token);
             if (function.isPresent()) {
                 final Function func = function.get();
                 final List<Expression> children = new ArrayList<>(func.getArity());

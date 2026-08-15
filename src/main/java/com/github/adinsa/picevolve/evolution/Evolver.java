@@ -1,4 +1,4 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.evolution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,43 +8,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.adinsa.picevolve.expression.Expression;
-import com.github.adinsa.picevolve.random.Random;
-import com.github.adinsa.picevolve.random.RandomImpl;
-import com.github.adinsa.picevolve.visitor.EvaluatorVisitor;
-import com.github.adinsa.picevolve.visitor.MutationVisitor;
-import com.github.adinsa.picevolve.visitor.Visitor;
+import com.github.adinsa.picevolve.expression.ExpressionParser;
+import com.github.adinsa.picevolve.expression.FunctionSet;
 
-public class PicEvolve {
+/**
+ * Drives the genetic algorithm: generates random populations and produces new generations via mutation and crossover.
+ *
+ * @author amar
+ *
+ */
+public class Evolver {
 
-    private static final Logger logger = LoggerFactory.getLogger(PicEvolve.class);
+    private static final Logger logger = LoggerFactory.getLogger(Evolver.class);
 
     private static final int MAX_ATTEMPTS_PER_MEMBER = 1000;
 
     private final FunctionSet functions;
+    private final ExpressionParser parser;
     private final Random random;
 
-    public PicEvolve() {
+    public Evolver() {
         functions = FunctionSet.createDefault();
+        parser = new ExpressionParser(functions);
         random = new RandomImpl(functions);
     }
 
-    public PicEvolve(final Random random) {
+    public Evolver(final Random random) {
         functions = FunctionSet.createDefault();
+        parser = new ExpressionParser(functions);
         this.random = random;
     }
 
-    public FunctionSet getFunctionSet() {
-        return functions;
-    }
-
-    /**
-     * Parse the input s-expression string and return the AST as an {@link Expression}.
-     *
-     * @param expressionString
-     * @return
-     */
-    public Expression parse(final String expressionString) {
-        return functions.parse(expressionString);
+    public ExpressionParser getParser() {
+        return parser;
     }
 
     /**
@@ -79,9 +75,9 @@ public class PicEvolve {
         int attempts = 0;
         while (nextGeneration.size() < populationSize && attempts < populationSize * MAX_ATTEMPTS_PER_MEMBER) {
             attempts++;
-            final Visitor visitor = new MutationVisitor(random);
-            final Expression mutant = parse(parent.toString());
-            mutant.accept(visitor);
+            final Mutator mutator = new Mutator(random);
+            final Expression mutant = parser.parse(parent.toString());
+            mutant.accept(mutator);
 
             if (!mutant.toString().equalsIgnoreCase(parent.toString())) {
                 nextGeneration.add(mutant);
@@ -111,8 +107,8 @@ public class PicEvolve {
         int attempts = 0;
         while (children.size() < populationSize && attempts < populationSize * MAX_ATTEMPTS_PER_MEMBER) {
             attempts++;
-            Expression momCopy = parse(mom.toString());
-            final Expression dadCopy = parse(dad.toString());
+            Expression momCopy = parser.parse(mom.toString());
+            final Expression dadCopy = parser.parse(dad.toString());
 
             final Expression momSubtree = random.nextNode(momCopy);
             final Expression dadSubtree = random.nextNode(dadCopy);
@@ -136,21 +132,5 @@ public class PicEvolve {
         if (populationSize <= 0) {
             throw new IllegalArgumentException("Population size must be greater than zero: " + populationSize);
         }
-    }
-
-    /**
-     * Evaluates input {@link Expression} into an {@link Image} whose values are normalized between 0 and 1.
-     *
-     * @param expression
-     * @param width
-     * @param height
-     * @return
-     */
-    public Image evaluate(final Expression expression, final int width, final int height) {
-
-        final EvaluatorVisitor visitor = new EvaluatorVisitor(width, height);
-        expression.accept(visitor);
-
-        return visitor.getImage().scaled();
     }
 }

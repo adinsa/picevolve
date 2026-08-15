@@ -1,4 +1,4 @@
-package com.github.adinsa.picevolve;
+package com.github.adinsa.picevolve.image;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

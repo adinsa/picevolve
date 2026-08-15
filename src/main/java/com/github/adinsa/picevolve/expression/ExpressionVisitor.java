@@ -1,11 +1,16 @@
-package com.github.adinsa.picevolve.visitor;
+package com.github.adinsa.picevolve.expression;
 
-import com.github.adinsa.picevolve.expression.Function;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
 import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
 import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
 
-public interface Visitor {
+/**
+ * Callback interface for traversing the node types of an {@link Expression} tree.
+ *
+ * @author amar
+ *
+ */
+public interface ExpressionVisitor {
 
     void visit(ScalarNode scalarNode);
 

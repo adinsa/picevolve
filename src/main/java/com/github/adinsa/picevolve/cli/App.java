@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.adinsa.picevolve.PicEvolve;
+import com.github.adinsa.picevolve.evolution.Evolver;
+import com.github.adinsa.picevolve.expression.Evaluator;
 import com.github.adinsa.picevolve.expression.Expression;
-import com.github.adinsa.picevolve.visitor.EvaluatorVisitor;
 
 /**
  * Simple command line interface providing ability to save/load/delete image expressions to a text file.
@@ -29,13 +29,13 @@ public class App {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
     private List<Expression> population;
-    private final PicEvolve picEvolve;
+    private final Evolver evolver;
     private final ExecutorService executor;
     private final Configuration configuration;
 
     public App() throws IOException {
         population = new ArrayList<>();
-        picEvolve = new PicEvolve();
+        evolver = new Evolver();
         configuration = new Configuration();
 
         final int numProcessors = Runtime.getRuntime().availableProcessors();
@@ -56,14 +56,14 @@ public class App {
     @Command(description = "Initialize a population of random images", prompts = { "Enter population size: " })
     public void init(final int populationSize) throws IOException {
 
-        population = picEvolve.initializePopulation(populationSize);
+        population = evolver.initializePopulation(populationSize);
         generateImages(population);
     }
 
     @Command(description = "Generate mutations of a parent image", prompts = { "Enter parent #: ", "Enter population size: " })
     public void mutate(final int parentId, final int populationSize) throws IOException {
 
-        population = picEvolve.mutate(getExpression(parentId), populationSize);
+        population = evolver.mutate(getExpression(parentId), populationSize);
         generateImages(population);
     }
 
@@ -71,7 +71,7 @@ public class App {
             "Enter population size: " })
     public void crossover(final int momId, final int dadId, final int populationSize) throws IOException {
 
-        population = picEvolve.crossover(getExpression(momId), getExpression(dadId), populationSize);
+        population = evolver.crossover(getExpression(momId), getExpression(dadId), populationSize);
         generateImages(population);
     }
 
@@ -86,7 +86,7 @@ public class App {
     public void load() throws IOException {
 
         final File libraryFile = getLibraryFile();
-        population = Files.readAllLines(libraryFile.toPath()).stream().map(exprStr -> picEvolve.parse(exprStr)).collect(Collectors.toList());
+        population = Files.readAllLines(libraryFile.toPath()).stream().map(exprStr -> evolver.getParser().parse(exprStr)).collect(Collectors.toList());
         generateImages(population);
     }
 
@@ -156,12 +156,12 @@ public class App {
 
     private class EvaluationTask implements Runnable {
 
-        private final EvaluatorVisitor evaluator;
+        private final Evaluator evaluator;
         private final Expression expression;
         private final File file;
 
         public EvaluationTask(final File file, final Expression expression, final int width, final int height) {
-            evaluator = new EvaluatorVisitor(width, height);
+            evaluator = new Evaluator(width, height);
             this.expression = expression;
             this.file = file;
         }
