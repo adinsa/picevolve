@@ -126,7 +126,7 @@ public class Image {
             argb += (pixels[pixel + 2] & 0xff) << 8; // green
             argb += (pixels[pixel + 3] & 0xff) << 16; // red
             final Color color = new Color(argb);
-            image.set(col, row, new Pixel(color.getRed(), color.getBlue(), color.getBlue()));
+            image.set(col, row, new Pixel(color.getRed(), color.getGreen(), color.getBlue()));
             col++;
             if (col == buf.getWidth()) {
                 col = 0;

@@ -3,6 +3,9 @@
 .settings
 .project
 
+# IntelliJ
+.idea
+
 # Maven
 target
 dependency-reduced-pom.xml
