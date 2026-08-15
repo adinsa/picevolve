@@ -21,7 +21,11 @@ public class RandomImpl implements Random {
     private final ExpressionParser parser;
 
     public RandomImpl(final FunctionSet functions) {
-        random = new java.util.Random();
+        this(functions, new java.util.Random());
+    }
+
+    public RandomImpl(final FunctionSet functions, final java.util.Random random) {
+        this.random = random;
         this.functions = functions;
         parser = new ExpressionParser(functions);
     }

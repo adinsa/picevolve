@@ -1,6 +1,7 @@
 package com.github.adinsa.picevolve.expression;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,5 +74,10 @@ public class EvaluatorTest {
                 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0,
         }, evaluator.getImage().asDoubleArray(), 0);
         // @formatter:on
+    }
+
+    @Test
+    public void testGetImageBeforeEvaluationThrows() {
+        assertThrows(IllegalStateException.class, () -> new Evaluator(1, 1).getImage());
     }
 }

@@ -330,6 +330,21 @@ public class MutatorTest {
         assertEquals("(abs (abs (- X 0.3)))", expr.toString());
     }
 
+    @Test
+    public void testVisitFunctionUpdatesHeight() {
+
+        final Expression expr = evolver.getParser().parse("(abs (- X 0.3))");
+
+        when(random.shouldMutate(any(), anyDouble())).thenReturn(false);
+
+        final Mutator visitor = new Mutator(random);
+
+        expr.accept(visitor);
+
+        assertEquals(3, expr.getHeight(), "root height should reflect its children");
+        assertEquals(2, expr.getChildren().get(0).getHeight(), "nested function height should reflect its children");
+    }
+
     /**
      * An {@link Answer} to {@link Random#shouldMutate(Expression, double)} that returns true when the specified type of {@link Expression} node is
      * provided

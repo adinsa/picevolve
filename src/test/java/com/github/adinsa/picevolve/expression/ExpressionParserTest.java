@@ -52,6 +52,10 @@ public class ExpressionParserTest {
 
         assertThrows(IllegalArgumentException.class, () -> parser.parse(""));
         assertThrows(IllegalArgumentException.class, () -> parser.parse("   "));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse(null));
+
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> parser.parse(""));
+        assertEquals("Cannot parse empty expression", ex.getMessage());
     }
 
     @Test
@@ -70,6 +74,11 @@ public class ExpressionParserTest {
     public void testParseUnbalancedParenthesesThrows() {
 
         assertThrows(IllegalArgumentException.class, () -> parser.parse("(abs (- x 0.3)"));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("(abs (- x 0.3)))"));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse(")"));
+
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> parser.parse(")("));
+        assertEquals("Unbalanced parentheses in: )(", ex.getMessage());
     }
 
     @Test

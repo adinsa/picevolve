@@ -1,8 +1,10 @@
 package com.github.adinsa.picevolve.image;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -74,5 +76,59 @@ public class ImageTest {
         assertEquals(0.1, scaled.get(0, 0).g(), 1e-9);
         assertEquals(1.0, scaled.get(0, 0).b(), 1e-9);
         assertEquals(0.5, scaled.get(0, 1).r(), 1e-9);
+    }
+
+    @Test
+    public void testScaledDefaultsToUnitRange() {
+
+        final Image image = new Image(1, 2);
+        image.set(0, 0, new Image.Pixel(0.0, 0.0, 0.0));
+        image.set(0, 1, new Image.Pixel(1.0, 1.0, 1.0));
+
+        final Image scaled = image.scaled();
+
+        assertEquals(0.0, scaled.get(0, 0).r(), 1e-9);
+        assertEquals(1.0, scaled.get(0, 1).r(), 1e-9);
+    }
+
+    @Test
+    public void testScaledConstantImageReturnsMinimum() {
+
+        final Image image = new Image(1, 1);
+        image.set(0, 0, new Image.Pixel(5.0));
+
+        final Image scaled = image.scaled(10, 20);
+
+        assertEquals(10.0, scaled.get(0, 0).r(), 1e-9);
+        assertEquals(10.0, scaled.get(0, 0).g(), 1e-9);
+        assertEquals(10.0, scaled.get(0, 0).b(), 1e-9);
+    }
+
+    @Test
+    public void testAsDoubleArray() {
+
+        final Image image = new Image(2, 1);
+        image.set(0, 0, new Image.Pixel(1.0, 2.0, 3.0));
+        image.set(1, 0, new Image.Pixel(4.0, 5.0, 6.0));
+
+        final double[] values = image.asDoubleArray();
+
+        assertEquals(6, values.length);
+        assertArrayEquals(new double[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 }, values, 0);
+    }
+
+    @Test
+    public void testImageToString() {
+
+        final Image image = new Image(1, 1);
+        image.set(0, 0, new Image.Pixel(1.0, 2.0, 3.0));
+
+        assertTrue(image.toString().contains("(1.0, 2.0, 3.0)"));
+    }
+
+    @Test
+    public void testPixelToString() {
+
+        assertEquals("(1.0, 2.0, 3.0)", new Image.Pixel(1.0, 2.0, 3.0).toString());
     }
 }
