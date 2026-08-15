@@ -58,7 +58,7 @@ public class EvaluatorVisitor implements Visitor {
         final List<Argument<?>> children = new ArrayList<>(function.getArity());
         for (int i = 0; i < function.getArity(); i++) {
             final Image child = imageStack.pop();
-            children.add(new Argument.ImageArgument(child));
+            children.add(0, new Argument.ImageArgument(child));
         }
         imageStack.push(function.interpret(width, height, children));
     }

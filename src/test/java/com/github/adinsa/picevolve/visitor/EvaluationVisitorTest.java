@@ -60,4 +60,20 @@ public class EvaluationVisitorTest {
         }, evaluator.getImage().asDoubleArray(), 0);
         // @formatter:on
     }
+
+    @Test
+    public void testNonCommutativeFunctionPreservesArgumentOrder() {
+
+        final EvaluatorVisitor evaluator = new EvaluatorVisitor(3, 3);
+        picEvolve.parse("(- x y)").accept(evaluator);
+
+        // (- x y) must evaluate as x - y, not y - x
+        // @formatter:off
+        assertArrayEquals(new double[] {
+                -2.0, -2.0, -2.0, -1.0, -1.0, -1.0, 0.0, 0.0, 0.0,
+                -1.0, -1.0, -1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+                0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0,
+        }, evaluator.getImage().asDoubleArray(), 0);
+        // @formatter:on
+    }
 }
