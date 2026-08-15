@@ -50,6 +50,37 @@ public class PicEvolveTest {
     }
 
     @Test
+    public void testParseEmptyExpressionThrows() {
+
+        assertThrows(IllegalArgumentException.class, () -> new PicEvolve().parse(""));
+        assertThrows(IllegalArgumentException.class, () -> new PicEvolve().parse("   "));
+    }
+
+    @Test
+    public void testParseMissingArgumentThrows() {
+
+        assertThrows(IllegalArgumentException.class, () -> new PicEvolve().parse("(+ 1)"));
+    }
+
+    @Test
+    public void testParseExtraTokenThrows() {
+
+        assertThrows(IllegalArgumentException.class, () -> new PicEvolve().parse("(+ 1 2 3)"));
+    }
+
+    @Test
+    public void testParseUnbalancedParenthesesThrows() {
+
+        assertThrows(IllegalArgumentException.class, () -> new PicEvolve().parse("(abs (- x 0.3)"));
+    }
+
+    @Test
+    public void testParseMalformedVectorThrows() {
+
+        assertThrows(IllegalArgumentException.class, () -> new PicEvolve().parse("#0.1,0.2"));
+    }
+
+    @Test
     public void testVectorToStringRoundTripsPrecisely() {
 
         final PicEvolve picEvolve = new PicEvolve();

@@ -99,6 +99,11 @@ public class PicEvolve {
      */
     public Expression parse(final String expressionString) {
 
+        if (expressionString == null || expressionString.trim().isEmpty()) {
+            throw new IllegalArgumentException("Cannot parse empty expression");
+        }
+        validateBalancedParentheses(expressionString);
+
         final Stack<Expression> exprStack = new Stack<>();
 
         final List<String> tokens = new ArrayList<>(
@@ -107,31 +112,64 @@ public class PicEvolve {
         Collections.reverse(tokens);
 
         for (final String token : tokens) {
-            if (getFunction(token).isPresent()) {
-                final Function func = getFunction(token).get();
+            final Optional<Function> function = getFunction(token);
+            if (function.isPresent()) {
+                final Function func = function.get();
                 final List<Expression> children = new ArrayList<>(func.getArity());
                 for (int i = 0; i < func.getArity(); i++) {
-                    final Expression child = exprStack.pop();
-                    children.add(child);
+                    if (exprStack.isEmpty()) {
+                        throw new IllegalArgumentException(
+                                String.format("Not enough arguments for function '%s' in: %s", token, expressionString));
+                    }
+                    children.add(exprStack.pop());
                 }
                 func.setChildren(children);
                 exprStack.push(func);
             } else if (Variable.fromString(token).isPresent()) {
                 exprStack.push(new Terminal.VariableNode(Variable.fromString(token).get()));
             } else if (token.startsWith("#")) {
-                final String[] vecParts = token.replace("#", "").split(",");
-                exprStack.push(new Terminal.VectorNode(
-                        new ArrayList<>(Arrays.asList(Double.valueOf(vecParts[0]), Double.valueOf(vecParts[1]), Double.valueOf(vecParts[2])))));
+                exprStack.push(new Terminal.VectorNode(parseVector(token)));
             } else {
                 try {
                     final double val = Double.valueOf(token);
                     exprStack.push(new Terminal.ScalarNode(val));
                 } catch (final NumberFormatException e) {
-                    throw new RuntimeException(String.format("Invalid token: '%s'", token));
+                    throw new IllegalArgumentException(String.format("Invalid token: '%s'", token));
                 }
             }
         }
+
+        if (exprStack.size() != 1) {
+            throw new IllegalArgumentException(
+                    String.format("Expression must have a single root node (found %d): %s", exprStack.size(), expressionString));
+        }
         return exprStack.pop();
+    }
+
+    private List<Double> parseVector(final String token) {
+        final String[] vecParts = token.replace("#", "").split(",");
+        if (vecParts.length != 3) {
+            throw new IllegalArgumentException(String.format("Vector must have exactly 3 components: '%s'", token));
+        }
+        return new ArrayList<>(
+                Arrays.asList(Double.valueOf(vecParts[0]), Double.valueOf(vecParts[1]), Double.valueOf(vecParts[2])));
+    }
+
+    private void validateBalancedParentheses(final String expression) {
+        int depth = 0;
+        for (final char c : expression.toCharArray()) {
+            if (c == '(') {
+                depth++;
+            } else if (c == ')') {
+                depth--;
+                if (depth < 0) {
+                    throw new IllegalArgumentException("Unbalanced parentheses in: " + expression);
+                }
+            }
+        }
+        if (depth != 0) {
+            throw new IllegalArgumentException("Unbalanced parentheses in: " + expression);
+        }
     }
 
     /**
