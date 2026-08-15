@@ -1,31 +1,28 @@
-package com.github.adinsa.picevolve.visitor;
+package com.github.adinsa.picevolve.expression;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.github.adinsa.picevolve.Image;
-import com.github.adinsa.picevolve.expression.Argument;
-import com.github.adinsa.picevolve.expression.Expression;
-import com.github.adinsa.picevolve.expression.Function;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
 import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
 import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
+import com.github.adinsa.picevolve.image.Image;
 
 /**
- * {@link Visitor} implementation that evaluates an {@link Expression} into an {@link Image}
+ * Evaluates an {@link Expression} into an {@link Image}.
  *
  * @author amar
  *
  */
-public class EvaluatorVisitor implements Visitor {
+public class Evaluator implements ExpressionVisitor {
 
     private final Stack<Image> imageStack;
 
     private final int width;
     private final int height;
 
-    public EvaluatorVisitor(final int width, final int height) {
+    public Evaluator(final int width, final int height) {
         this.width = width;
         this.height = height;
         imageStack = new Stack<>();
@@ -58,7 +55,7 @@ public class EvaluatorVisitor implements Visitor {
         final List<Argument<?>> children = new ArrayList<>(function.getArity());
         for (int i = 0; i < function.getArity(); i++) {
             final Image child = imageStack.pop();
-            children.add(new Argument.ImageArgument(child));
+            children.add(0, new Argument.ImageArgument(child));
         }
         imageStack.push(function.interpret(width, height, children));
     }

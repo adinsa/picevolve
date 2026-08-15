@@ -3,8 +3,8 @@ package com.github.adinsa.picevolve.expression;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import com.github.adinsa.picevolve.Image;
-import com.github.adinsa.picevolve.Image.Pixel;
+import com.github.adinsa.picevolve.image.Image;
+import com.github.adinsa.picevolve.image.Image.Pixel;
 
 /**
  * An argument to an {@link Expression}

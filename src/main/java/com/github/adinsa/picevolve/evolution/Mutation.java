@@ -1,16 +1,14 @@
-package com.github.adinsa.picevolve.mutation;
+package com.github.adinsa.picevolve.evolution;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.adinsa.picevolve.PicEvolve;
 import com.github.adinsa.picevolve.expression.Expression;
 import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.ExpressionParser;
 import com.github.adinsa.picevolve.expression.Terminal;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
 import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
-import com.github.adinsa.picevolve.random.Random;
-import com.github.adinsa.picevolve.random.RandomImpl;
 
 /**
  * Genetic operator used to evolve {@link Expression}s
@@ -21,17 +19,11 @@ import com.github.adinsa.picevolve.random.RandomImpl;
 public abstract class Mutation {
 
     protected Random random;
-    protected PicEvolve picEvolve;
-    protected Class<? extends Expression> nodeType;
+    protected ExpressionParser parser;
 
-    public Mutation(final Class<? extends Expression> nodeType) {
-        this(new RandomImpl(), nodeType);
-    }
-
-    public Mutation(final Random random, final Class<? extends Expression> nodeType) {
+    public Mutation(final Random random, final ExpressionParser parser) {
         this.random = random;
-        picEvolve = new PicEvolve(random);
-        this.nodeType = nodeType;
+        this.parser = parser;
     }
 
     public abstract void mutate(Expression node);
@@ -41,15 +33,13 @@ public abstract class Mutation {
      */
     public static class RandomExpressionMutation extends Mutation {
 
-        public RandomExpressionMutation(final Random random) {
-            super(random, Expression.class);
+        public RandomExpressionMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
         public void mutate(final Expression node) {
-            final List<Expression> newChildren = node.getParent().getChildren();
-            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == node).findAny().get()), random.nextExpression());
-            node.getParent().setChildren(newChildren);
+            node.replaceWith(random.nextExpression());
         }
     }
 
@@ -59,15 +49,14 @@ public abstract class Mutation {
      */
     public static class AdjustScalarMutation extends Mutation {
 
-        public AdjustScalarMutation(final Random random) {
-            super(random, ScalarNode.class);
+        public AdjustScalarMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
         public void mutate(final Expression node) {
-            final Terminal.ScalarNode scalarNode = (Terminal.ScalarNode) nodeType.asSubclass(Expression.class).cast(node);
-            final Terminal.ScalarNode randomScalar = random.nextScalar();
-            scalarNode.setValue(randomScalar.getValue());
+            final Terminal.ScalarNode scalarNode = (Terminal.ScalarNode) node;
+            scalarNode.setValue(random.nextScalar().getValue());
         }
     }
 
@@ -77,15 +66,14 @@ public abstract class Mutation {
      */
     public static class AdjustVectorMutation extends Mutation {
 
-        public AdjustVectorMutation(final Random random) {
-            super(random, VectorNode.class);
+        public AdjustVectorMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
         public void mutate(final Expression node) {
-            final Terminal.VectorNode vectorNode = (Terminal.VectorNode) nodeType.asSubclass(Expression.class).cast(node);
-            final VectorNode randomVector = random.nextVector();
-            vectorNode.setValue(randomVector.getValue());
+            final Terminal.VectorNode vectorNode = (Terminal.VectorNode) node;
+            vectorNode.setValue(random.nextVector().getValue());
         }
     }
 
@@ -95,8 +83,8 @@ public abstract class Mutation {
      */
     public static class BecomeArgumentMutation extends Mutation {
 
-        public BecomeArgumentMutation(final Random random) {
-            super(random, Expression.class);
+        public BecomeArgumentMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
@@ -110,8 +98,7 @@ public abstract class Mutation {
                 children.add(random.nextTerminal());
             }
 
-            final List<Expression> newChildren = node.getParent().getChildren();
-            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == node).findAny().get()), randomFunc);
+            node.replaceWith(randomFunc);
             randomFunc.setChildren(children);
         }
     }
@@ -122,14 +109,14 @@ public abstract class Mutation {
      */
     public static class ChangeFunctionMutation extends Mutation {
 
-        public ChangeFunctionMutation(final Random random) {
-            super(random, Function.class);
+        public ChangeFunctionMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
         public void mutate(final Expression node) {
 
-            final Function functionNode = (Function) nodeType.asSubclass(Expression.class).cast(node);
+            final Function functionNode = (Function) node;
 
             final Function randomFunc = random.nextFunction();
 
@@ -144,9 +131,8 @@ public abstract class Mutation {
                 children.add(random.nextTerminal());
             }
 
-            final List<Expression> newChildren = functionNode.getParent().getChildren();
-            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == functionNode).findAny().get()), randomFunc);
             randomFunc.setChildren(children);
+            node.replaceWith(randomFunc);
         }
     }
 
@@ -156,19 +142,13 @@ public abstract class Mutation {
      */
     public static class ReplaceWithArgumentMutation extends Mutation {
 
-        public ReplaceWithArgumentMutation(final Random random) {
-            super(random, Function.class);
+        public ReplaceWithArgumentMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
         public void mutate(final Expression node) {
-
-            final Function functionNode = (Function) nodeType.asSubclass(Expression.class).cast(node);
-
-            final List<Expression> newChildren = functionNode.getParent().getChildren();
-            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == functionNode).findAny().get()),
-                    random.nextChild(functionNode));
-            functionNode.getParent().setChildren(newChildren);
+            node.replaceWith(random.nextChild(node));
         }
     }
 
@@ -178,8 +158,8 @@ public abstract class Mutation {
      */
     public static class BecomeNodeCopyMutation extends Mutation {
 
-        public BecomeNodeCopyMutation(final Random random) {
-            super(random, Expression.class);
+        public BecomeNodeCopyMutation(final Random random, final ExpressionParser parser) {
+            super(random, parser);
         }
 
         @Override
@@ -188,10 +168,7 @@ public abstract class Mutation {
             while (root.getParent() != null) {
                 root = root.getParent();
             }
-            final List<Expression> newChildren = node.getParent().getChildren();
-            newChildren.set(newChildren.indexOf(newChildren.stream().filter(child -> child == node).findAny().get()),
-                    picEvolve.parse(random.nextNode(root).toString()));
-            node.getParent().setChildren(newChildren);
+            node.replaceWith(parser.parse(random.nextNode(root).toString()));
         }
     }
 }

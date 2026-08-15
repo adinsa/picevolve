@@ -1,45 +1,44 @@
-package com.github.adinsa.picevolve.visitor;
+package com.github.adinsa.picevolve.evolution;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.ExpressionVisitor;
 import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.FunctionSet;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
 import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
 import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
-import com.github.adinsa.picevolve.mutation.Mutation;
-import com.github.adinsa.picevolve.random.Random;
-import com.github.adinsa.picevolve.random.RandomImpl;
 
 /**
- * {@link Visitor} implementation that applies genetic {@link Mutation} operations on an {@link Expression} tree
+ * Applies random {@link Mutation}s to the nodes of an {@link Expression} tree.
  *
  * @author amar
  *
  */
-public class MutationVisitor implements Visitor {
+public class Mutator implements ExpressionVisitor {
 
-    private static final Logger logger = LoggerFactory.getLogger(MutationVisitor.class);
+    private static final Logger logger = LoggerFactory.getLogger(Mutator.class);
 
     private static final double DEFAULT_GLOBAL_MUTATION_FREQUENCY = 0.4;
 
     private final Random random;
     private final double globalMutationFrequency;
 
-    public MutationVisitor() {
-        this(new RandomImpl(), DEFAULT_GLOBAL_MUTATION_FREQUENCY);
+    public Mutator() {
+        this(new RandomImpl(FunctionSet.createDefault()), DEFAULT_GLOBAL_MUTATION_FREQUENCY);
     }
 
-    public MutationVisitor(final Random random) {
+    public Mutator(final Random random) {
         this(random, DEFAULT_GLOBAL_MUTATION_FREQUENCY);
     }
 
-    public MutationVisitor(final double globalMutationFrequency) {
-        this(new RandomImpl(), globalMutationFrequency);
+    public Mutator(final double globalMutationFrequency) {
+        this(new RandomImpl(FunctionSet.createDefault()), globalMutationFrequency);
     }
 
-    public MutationVisitor(final Random random, final double globalMutationFrequency) {
+    public Mutator(final Random random, final double globalMutationFrequency) {
         this.random = random;
         this.globalMutationFrequency = globalMutationFrequency;
     }
@@ -86,6 +85,12 @@ public class MutationVisitor implements Visitor {
 
     @Override
     public void visit(final Function functionNode) {
+
+        int maxChildHeight = 0;
+        for (final Expression child : functionNode.getChildren()) {
+            maxChildHeight = Math.max(maxChildHeight, child.getHeight());
+        }
+        functionNode.setHeight(maxChildHeight + 1);
 
         if (random.shouldMutate(functionNode, globalMutationFrequency) && functionNode.getParent() != null) {
 

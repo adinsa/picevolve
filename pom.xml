@@ -18,6 +18,9 @@
     <logback.version>1.5.6</logback.version>
     <junit.version>5.10.2</junit.version>
     <mockito.version>5.12.0</mockito.version>
+    <jacoco.version>0.8.13</jacoco.version>
+    <pitest.version>1.25.9</pitest.version>
+    <pitest.junit5.version>1.2.3</pitest.junit5.version>
   </properties>
 
   <dependencies>
@@ -48,6 +51,13 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.pitest</groupId>
+      <artifactId>pitest-junit5-plugin</artifactId>
+      <version>${pitest.junit5.version}</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -57,7 +67,58 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.5</version>
         <configuration>
+          <argLine>@{argLine} -XX:+EnableDynamicAgentLoading</argLine>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>${pitest.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>${pitest.junit5.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <targetClasses>
+            <param>com.github.adinsa.picevolve.*</param>
+          </targetClasses>
+          <targetTests>
+            <param>com.github.adinsa.picevolve.*</param>
+          </targetTests>
+          <outputFormats>
+            <outputFormat>HTML</outputFormat>
+            <outputFormat>XML</outputFormat>
+          </outputFormats>
+          <mutators>
+            <mutator>DEFAULTS</mutator>
+          </mutators>
+          <threads>4</threads>
+          <parseSurefireArgLine>false</parseSurefireArgLine>
           <argLine>-XX:+EnableDynamicAgentLoading</argLine>
+          <mutationThreshold>80</mutationThreshold>
         </configuration>
       </plugin>
       <plugin>

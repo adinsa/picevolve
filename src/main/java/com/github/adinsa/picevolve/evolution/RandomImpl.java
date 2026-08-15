@@ -1,33 +1,33 @@
-package com.github.adinsa.picevolve.random;
+package com.github.adinsa.picevolve.evolution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Stack;
-import java.util.stream.IntStream;
 
-import com.github.adinsa.picevolve.PicEvolve;
 import com.github.adinsa.picevolve.expression.Expression;
+import com.github.adinsa.picevolve.expression.ExpressionParser;
 import com.github.adinsa.picevolve.expression.Function;
+import com.github.adinsa.picevolve.expression.FunctionSet;
 import com.github.adinsa.picevolve.expression.Terminal.ScalarNode;
 import com.github.adinsa.picevolve.expression.Terminal.VariableNode;
 import com.github.adinsa.picevolve.expression.Terminal.VectorNode;
 import com.github.adinsa.picevolve.expression.Variable;
-import com.github.adinsa.picevolve.mutation.Mutation;
-import com.github.adinsa.picevolve.mutation.MutationFactory;
-import com.github.adinsa.picevolve.mutation.MutationFactory.MutationFrequency;
 
 public class RandomImpl implements Random {
 
     private final java.util.Random random;
-    private final PicEvolve picEvolve;
+    private final FunctionSet functions;
+    private final ExpressionParser parser;
 
-    public RandomImpl() {
-        random = new java.util.Random();
-        picEvolve = new PicEvolve(this);
+    public RandomImpl(final FunctionSet functions) {
+        this(functions, new java.util.Random());
+    }
+
+    public RandomImpl(final FunctionSet functions, final java.util.Random random) {
+        this.random = random;
+        this.functions = functions;
+        parser = new ExpressionParser(functions);
     }
 
     @Override
@@ -56,10 +56,8 @@ public class RandomImpl implements Random {
 
     @Override
     public Function nextFunction() {
-        final Iterator<String> iter = picEvolve.getFunctionNames().iterator();
-        IntStream.range(0, random.nextInt(picEvolve.getFunctionNames().size())).forEach(i -> iter.next());
-
-        return picEvolve.getFunction(iter.next()).get();
+        final List<String> names = new ArrayList<>(functions.names());
+        return functions.get(names.get(random.nextInt(names.size()))).get();
     }
 
     /**
@@ -100,7 +98,7 @@ public class RandomImpl implements Random {
         }
         final String exprStr = sb.toString().trim() + ")";
 
-        return picEvolve.parse(exprStr);
+        return parser.parse(exprStr);
     }
 
     /**
@@ -134,7 +132,7 @@ public class RandomImpl implements Random {
     @Override
     public Mutation nextMutation(final Class<? extends Expression> nodeType) {
 
-        final List<MutationFrequency> freqs = new MutationFactory(this).getMutationFrequencies(nodeType);
+        final List<MutationFactory.MutationFrequency> freqs = new MutationFactory(parser, this).getMutationFrequencies(nodeType);
 
         final int totalWeight = freqs.stream().mapToInt(freq -> freq.getRelativeFrequency()).sum();
 
@@ -153,28 +151,6 @@ public class RandomImpl implements Random {
      */
     @Override
     public boolean shouldMutate(final Expression expression, final double globalMutationFrequency) {
-        return random.nextDouble() < globalMutationFrequency * (1.0 / getHeight(expression));
-    }
-
-    private int getHeight(final Expression expression) {
-
-        int height = 0;
-        final Queue<Expression> currentLevel = new LinkedList<>();
-        final Queue<Expression> nextLevel = new LinkedList<>();
-
-        currentLevel.add(expression);
-
-        while (!currentLevel.isEmpty()) {
-            final Expression cur = currentLevel.remove();
-            for (final Expression child : cur.getChildren()) {
-                nextLevel.add(child);
-            }
-            if (currentLevel.isEmpty()) {
-                height++;
-                currentLevel.addAll(nextLevel);
-                nextLevel.clear();
-            }
-        }
-        return height;
+        return random.nextDouble() < globalMutationFrequency * (1.0 / expression.getHeight());
     }
 }

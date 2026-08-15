@@ -10,9 +10,8 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.github.adinsa.picevolve.Image;
-import com.github.adinsa.picevolve.Image.Pixel;
-import com.github.adinsa.picevolve.visitor.Visitor;
+import com.github.adinsa.picevolve.image.Image;
+import com.github.adinsa.picevolve.image.Image.Pixel;
 
 /**
  * Non-terminal {@link Expression} node
@@ -41,7 +40,7 @@ public abstract class Function extends Expression {
     public abstract Function copy();
 
     @Override
-    public void accept(final Visitor visitor) {
+    public void accept(final ExpressionVisitor visitor) {
         for (final Expression child : getChildren()) {
             child.accept(visitor);
         }

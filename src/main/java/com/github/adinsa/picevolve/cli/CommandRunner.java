@@ -1,6 +1,5 @@
 package com.github.adinsa.picevolve.cli;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -67,9 +66,12 @@ public class CommandRunner {
                     params.add(parameters.get(i).getValue(scanner));
                 } catch (final InputMismatchException e) {
                     writer.println("Invalid input");
-                    scanner.next();
+                    scanner.nextLine();
                     return;
                 }
+            }
+            if (!parameters.isEmpty()) {
+                scanner.nextLine();
             }
             try {
                 method.invoke(handler, params.toArray(new Object[params.size()]));
@@ -111,12 +113,12 @@ public class CommandRunner {
         final PrintStream printStream = new PrintStream(os);
         printStream.println("Enter '?' for help");
 
-        try (final BufferedReader br = new BufferedReader(new InputStreamReader(is)); final Scanner scanner = new Scanner(br);) {
+        try (final Scanner scanner = new Scanner(new InputStreamReader(is))) {
 
             String line;
             do {
                 printStream.print("=> ");
-                line = br.readLine();
+                line = scanner.hasNextLine() ? scanner.nextLine() : null;
                 if (line == null) {
                     break;
                 }
