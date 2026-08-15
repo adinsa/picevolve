@@ -4,7 +4,7 @@ PicEvolve is inspired by Karl Sims' paper [Artificial Evolution for Computer Gra
 
 ### Requirements
 * [Maven 3](https://maven.apache.org/)
-* [JDK 1.8](http://www.oracle.com/technetwork/java/javase/overview/index.html)
+* [JDK 17](https://adoptium.net/)
 
 ### Installation and Usage
 1. Build it
