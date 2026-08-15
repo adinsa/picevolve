@@ -1,7 +1,6 @@
 package com.github.adinsa.picevolve.cli;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -87,10 +86,7 @@ public class App {
     public void load() throws IOException {
 
         final File libraryFile = getLibraryFile();
-        population = new ArrayList<>();
-        try (FileReader reader = new FileReader(libraryFile)) {
-            population = Files.readAllLines(libraryFile.toPath()).stream().map(exprStr -> picEvolve.parse(exprStr)).collect(Collectors.toList());
-        }
+        population = Files.readAllLines(libraryFile.toPath()).stream().map(exprStr -> picEvolve.parse(exprStr)).collect(Collectors.toList());
         generateImages(population);
     }
 
@@ -175,9 +171,8 @@ public class App {
             try {
                 expression.accept(evaluator);
                 evaluator.getImage().scaled().write(file, configuration.getImageFormat());
-            } catch (final Throwable t) {
-                logger.error("Error:", t);
-                throw t;
+            } catch (final Exception e) {
+                logger.error("Error evaluating expression: {}", expression, e);
             }
         }
     }

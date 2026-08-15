@@ -89,7 +89,7 @@ public class Image {
         try {
             ImageIO.write(buf, formatName, file);
         } catch (final IOException e) {
-            throw new RuntimeException(String.format("Error writing file: '%s'", file.getPath()));
+            throw new RuntimeException(String.format("Error writing file: '%s'", file.getPath()), e);
         }
     }
 
