@@ -1,13 +1,11 @@
 package com.github.adinsa.picevolve;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -64,18 +62,30 @@ public class Image {
      */
     public Image scaled(final double minimum, final double maximum) {
 
-        final double oldMax = asDoubleStream().max().getAsDouble();
-        final double oldMin = asDoubleStream().min().getAsDouble();
+        double oldMax = Double.NEGATIVE_INFINITY;
+        double oldMin = Double.POSITIVE_INFINITY;
+        for (final Pixel[] row : pixels) {
+            for (final Pixel pixel : row) {
+                oldMax = Math.max(oldMax, Math.max(pixel.r(), Math.max(pixel.g(), pixel.b())));
+                oldMin = Math.min(oldMin, Math.min(pixel.r(), Math.min(pixel.g(), pixel.b())));
+            }
+        }
 
         final Image scaledImage = new Image(width, height);
-
-        final Function<Double, Double> scaleFunc = component -> oldMax - oldMin == 0 ? minimum
-                : (component - oldMin) * (maximum - minimum) / (oldMax - oldMin) + minimum;
-
-        IntStream.range(0, height).forEach(y -> IntStream.range(0, width).forEach(x -> scaledImage.set(x, y,
-                get(x, y).r(scaleFunc.apply(get(x, y).r())).g(scaleFunc.apply(get(x, y).g())).b(scaleFunc.apply(get(x, y).b())))));
+        final double range = oldMax - oldMin;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                final Pixel pixel = pixels[y][x];
+                scaledImage.set(x, y, new Pixel(scale(pixel.r(), oldMin, range, minimum, maximum),
+                        scale(pixel.g(), oldMin, range, minimum, maximum), scale(pixel.b(), oldMin, range, minimum, maximum)));
+            }
+        }
 
         return scaledImage;
+    }
+
+    private double scale(final double component, final double oldMin, final double range, final double minimum, final double maximum) {
+        return range == 0 ? minimum : (component - oldMin) * (maximum - minimum) / range + minimum;
     }
 
     /**
@@ -100,11 +110,12 @@ public class Image {
      */
     public BufferedImage asBufferedImage() {
         final BufferedImage buf = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-        final Graphics graphics = buf.getGraphics();
-        IntStream.range(0, pixels.length).forEach(y -> IntStream.range(0, pixels[y].length).forEach(x -> {
-            graphics.setColor(new Color((float) get(x, y).r(), (float) get(x, y).g(), (float) get(x, y).b()));
-            graphics.drawRect(x, y, 1, 1);
-        }));
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                final Pixel pixel = pixels[y][x];
+                buf.setRGB(x, y, new Color((float) pixel.r(), (float) pixel.g(), (float) pixel.b()).getRGB());
+            }
+        }
         return buf;
     }
 

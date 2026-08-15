@@ -2,9 +2,7 @@ package com.github.adinsa.picevolve.random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Stack;
 
 import com.github.adinsa.picevolve.FunctionSet;
@@ -149,28 +147,6 @@ public class RandomImpl implements Random {
      */
     @Override
     public boolean shouldMutate(final Expression expression, final double globalMutationFrequency) {
-        return random.nextDouble() < globalMutationFrequency * (1.0 / getHeight(expression));
-    }
-
-    private int getHeight(final Expression expression) {
-
-        int height = 0;
-        final Queue<Expression> currentLevel = new LinkedList<>();
-        final Queue<Expression> nextLevel = new LinkedList<>();
-
-        currentLevel.add(expression);
-
-        while (!currentLevel.isEmpty()) {
-            final Expression cur = currentLevel.remove();
-            for (final Expression child : cur.getChildren()) {
-                nextLevel.add(child);
-            }
-            if (currentLevel.isEmpty()) {
-                height++;
-                currentLevel.addAll(nextLevel);
-                nextLevel.clear();
-            }
-        }
-        return height;
+        return random.nextDouble() < globalMutationFrequency * (1.0 / expression.getHeight());
     }
 }

@@ -88,6 +88,12 @@ public class MutationVisitor implements Visitor {
     @Override
     public void visit(final Function functionNode) {
 
+        int maxChildHeight = 0;
+        for (final Expression child : functionNode.getChildren()) {
+            maxChildHeight = Math.max(maxChildHeight, child.getHeight());
+        }
+        functionNode.setHeight(maxChildHeight + 1);
+
         if (random.shouldMutate(functionNode, globalMutationFrequency) && functionNode.getParent() != null) {
 
             final Mutation mutation = random.nextMutation(Function.class);

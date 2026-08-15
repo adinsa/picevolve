@@ -17,9 +17,23 @@ public abstract class Expression {
 
     private Expression parent;
     private List<Expression> children;
+    private int height = 1;
 
     public final Expression getParent() {
         return parent;
+    }
+
+    /**
+     * Returns the height (number of levels) of the subtree rooted at this node. Defaults to 1 (a leaf) and is populated during mutation.
+     *
+     * @return
+     */
+    public final int getHeight() {
+        return height;
+    }
+
+    public final void setHeight(final int height) {
+        this.height = height;
     }
 
     public final void setChildren(final List<Expression> children) {

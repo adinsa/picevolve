@@ -37,4 +37,42 @@ public class ImageTest {
 
         assertNotNull(ex.getCause(), "Write failure should preserve the underlying cause");
     }
+
+    @Test
+    public void testAsBufferedImageSetsPixels() {
+
+        final Image image = new Image(2, 1);
+        image.set(0, 0, new Image.Pixel(1.0, 0.0, 0.5));
+        image.set(1, 0, new Image.Pixel(0.0, 0.5, 1.0));
+
+        final BufferedImage buf = image.asBufferedImage();
+
+        assertEquals(2, buf.getWidth());
+        assertEquals(1, buf.getHeight());
+
+        final Color first = new Color(buf.getRGB(0, 0));
+        assertEquals(255, first.getRed());
+        assertEquals(0, first.getGreen());
+        assertEquals(128, first.getBlue());
+
+        final Color second = new Color(buf.getRGB(1, 0));
+        assertEquals(0, second.getRed());
+        assertEquals(128, second.getGreen());
+        assertEquals(255, second.getBlue());
+    }
+
+    @Test
+    public void testScaledNormalizesBetweenBounds() {
+
+        final Image image = new Image(1, 2);
+        image.set(0, 0, new Image.Pixel(0.0, 10.0, 100.0));
+        image.set(0, 1, new Image.Pixel(50.0, 50.0, 50.0));
+
+        final Image scaled = image.scaled(0, 1);
+
+        assertEquals(0.0, scaled.get(0, 0).r(), 1e-9);
+        assertEquals(0.1, scaled.get(0, 0).g(), 1e-9);
+        assertEquals(1.0, scaled.get(0, 0).b(), 1e-9);
+        assertEquals(0.5, scaled.get(0, 1).r(), 1e-9);
+    }
 }
