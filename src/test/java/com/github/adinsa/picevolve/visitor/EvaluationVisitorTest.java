@@ -1,9 +1,9 @@
 package com.github.adinsa.picevolve.visitor;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.adinsa.picevolve.PicEvolve;
 
@@ -11,7 +11,7 @@ public class EvaluationVisitorTest {
 
     private PicEvolve picEvolve;
 
-    @Before
+    @BeforeEach
     public void setup() {
         picEvolve = new PicEvolve();
     }

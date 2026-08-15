@@ -68,7 +68,7 @@ public abstract class Terminal<T> extends Expression {
 
         @Override
         public String toString() {
-            return String.format("#%f,%f,%f", getValue().get(0), getValue().get(1), getValue().get(2));
+            return "#" + getValue().get(0) + "," + getValue().get(1) + "," + getValue().get(2);
         }
     }
 

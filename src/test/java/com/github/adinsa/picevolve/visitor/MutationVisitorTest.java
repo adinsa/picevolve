@@ -1,16 +1,16 @@
 package com.github.adinsa.picevolve.visitor;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -33,7 +33,7 @@ public class MutationVisitorTest {
     private PicEvolve picEvolve;
     private Random random;
 
-    @Before
+    @BeforeEach
     public void setup() {
         picEvolve = new PicEvolve();
         random = mock(Random.class);
@@ -145,7 +145,7 @@ public class MutationVisitorTest {
 
         expr.accept(visitor);
 
-        assertEquals("(abs (- X #0.100000,0.200000,0.300000))", expr.toString());
+        assertEquals("(abs (- X #0.1,0.2,0.3))", expr.toString());
     }
 
     @Test
@@ -274,7 +274,7 @@ public class MutationVisitorTest {
 
         expr.accept(visitor);
 
-        assertEquals("(abs (noise X 0.3 #0.100000,0.200000,0.300000))", expr.toString());
+        assertEquals("(abs (noise X 0.3 #0.1,0.2,0.3))", expr.toString());
     }
 
     @Test
